@@ -1,49 +1,64 @@
-# Kế hoạch Triển khai Giao diện Dashboard
+# Kế hoạch: Sửa Sidebar và Tích hợp Database
 
-Kế hoạch này phác thảo các bước để tạo một Dashboard hiện đại, chủ đề tối (dark-themed) cho ứng dụng Cinema CMS.
+## Mục tiêu
+1. **Sửa lỗi hiển thị Sidebar** - text bị lặp lại nhiều lần
+2. **Kết nối SQL Server** - lấy dữ liệu thực từ database
 
-## Giải pháp đã triển khai
+---
 
-> [!NOTE]
-> **Đã chuyển từ Guna.UI2 sang Custom Controls**
-> 
-> Do Guna.UI2.WinForms yêu cầu license key, tôi đã tạo các **Custom Controls tự code bằng GDI+** - hoàn toàn miễn phí và không cần license.
+## Vấn đề Sidebar
 
-## Các Thay đổi Đã Thực hiện
+Từ screenshot, sidebar hiển thị text "Xin chào, Qu" lặp lại nhiều lần. Đây có thể là do:
+- Controls bị overlap/chồng lên nhau trong Designer
+- Paint event không được clear đúng cách
 
-### Custom Controls (Tự code)
+---
 
-#### [NEW] [RoundedPanel.cs](file:///d:/TAILIEU/Project_cinema/ProjectCinema/ProjectCinema/UI/RoundedPanel.cs)
-- Panel với góc bo tròn tùy chỉnh
-- Properties: `BorderRadius`, `BorderColor`, `BorderSize`
-- Vẽ bằng GDI+ với anti-aliasing
+## Proposed Changes
 
-#### [NEW] [RoundedButton.cs](file:///d:/TAILIEU/Project_cinema/ProjectCinema/ProjectCinema/UI/RoundedButton.cs)
-- Button với góc bo tròn và hiệu ứng hover
-- Hỗ trợ trạng thái `Checked` (active)
-- Properties: `CheckedBackColor`, `HoverBackColor`
+### 1. Sửa lỗi Sidebar
 
-#### [NEW] [CustomProgressBar.cs](file:///d:/TAILIEU/Project_cinema/ProjectCinema/ProjectCinema/UI/CustomProgressBar.cs)
-- ProgressBar hiện đại với góc bo tròn
-- Tùy chỉnh màu nền và màu tiến trình
+#### [MODIFY] [frmDashBoard.cs](file:///d:/TAILIEU/Project_cinema/ProjectCinema/ProjectCinema/frmDashBoard.cs)
+- Kiểm tra và xóa các controls trùng lặp
+- Thêm DoubleBuffered để tránh flicker
 
-### UI Components
+---
 
-#### [MODIFIED] [frmDashBoard.cs](file:///d:/TAILIEU/Project_cinema/ProjectCinema/ProjectCinema/frmDashBoard.cs)
-- Sử dụng `RoundedPanel` cho Sidebar và Main Content
-- Sử dụng `RoundedButton` cho các nút điều hướng
-- Màu nền Dark Navy (#0B0E14)
+### 2. Tích hợp Database
 
-#### [MODIFIED] [SummaryCard.cs](file:///d:/TAILIEU/Project_cinema/ProjectCinema/ProjectCinema/UI/SummaryCard.cs)
-- UserControl cho các số liệu thống kê
-- Sử dụng `RoundedPanel` thay vì Guna2Panel
+#### Database Schema (đã có)
+- **Connection**: `.\SQLEXPRESS` / `CinemaManagement`
+- **DbContext**: `DashBoard` class trong `Modals/DashBoard.cs`
 
-#### [MODIFIED] [MovieListItem.cs](file:///d:/TAILIEU/Project_cinema/ProjectCinema/ProjectCinema/UI/MovieListItem.cs)
-- UserControl cho danh sách "Phim đang hot"
-- Sử dụng `CustomProgressBar` thay vì Guna2ProgressBar
+#### Entities chính:
+| Entity | Mô tả |
+|--------|-------|
+| `HoaDon` | Hóa đơn (TongTien, ThanhTien, NgayLap) |
+| `SuatChieu` | Suất chiếu (NgayChieu, GioChieu, GiaVe, TrangThai) |
+| `Phim` | Phim (TenPhim, ThoiLuong, DanhGia) |
+| `PhongChieu` | Phòng chiếu (TenPhong, SoGhe) |
+| `Ve` | Vé (GiaVe, TrangThai) |
 
-## Kết quả
+#### [MODIFY] [frmDashBoard.cs](file:///d:/TAILIEU/Project_cinema/ProjectCinema/ProjectCinema/frmDashBoard.cs)
+- Thêm method `LoadDashboardData()` để lấy dữ liệu từ DB
+- Cập nhật cards với dữ liệu thực:
+  - **Doanh thu hôm nay**: SUM(HoaDon.ThanhTien) WHERE NgayLap = today
+  - **Suất chiếu còn lại**: COUNT(SuatChieu) WHERE NgayChieu = today AND TrangThai = "Chưa chiếu"
+  - **Tỷ lệ lấp đầy**: (Tổng vé đã bán / Tổng ghế) * 100
+- Cập nhật DataGridView `dgvUpcomingShows` với suất chiếu sắp tới
+- Cập nhật danh sách "Phim đang hot"
 
-✅ Build thành công - 0 Warnings, 0 Errors
-✅ Không cần license
-✅ Toàn quyền kiểm soát code
+---
+
+## Verification Plan
+
+### Build Test
+```bash
+dotnet build
+```
+
+### Runtime Test
+1. Chạy ứng dụng
+2. Kiểm tra Sidebar hiển thị đúng
+3. Kiểm tra các cards hiển thị dữ liệu từ database
+4. Kiểm tra bảng suất chiếu sắp tới

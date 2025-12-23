@@ -12,6 +12,7 @@ namespace ProjectCinema.UI
         private int borderSize = 0;
         private bool isHovered = false;
         private bool isChecked = false;
+        private Color glowColor = Color.FromArgb(100, 30, 107, 254);
 
         public int BorderRadius
         {
@@ -35,6 +36,12 @@ namespace ProjectCinema.UI
         {
             get => isChecked;
             set { isChecked = value; Invalidate(); }
+        }
+
+        public Color GlowColor
+        {
+            get => glowColor;
+            set { glowColor = value; Invalidate(); }
         }
 
         public Color CheckedBackColor { get; set; } = Color.FromArgb(30, 107, 254);
@@ -69,60 +76,79 @@ namespace ProjectCinema.UI
         protected override void OnPaint(PaintEventArgs pevent)
         {
             pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            pevent.Graphics.InterpolationMode = InterpolationMode.HighQualityBilinear;
 
-            RectangleF rectSurface = new RectangleF(0, 0, this.Width, this.Height);
-            RectangleF rectBorder = new RectangleF(1, 1, this.Width - 2, this.Height - 2);
+            Rectangle rectSurface = this.ClientRectangle;
+            Rectangle rectBorder = rectSurface;
+            rectBorder.Inflate(-1, -1);
 
             using (GraphicsPath pathSurface = GetRoundedPath(rectSurface, borderRadius))
             using (GraphicsPath pathBorder = GetRoundedPath(rectBorder, borderRadius - 1))
-            using (Pen penSurface = new Pen(this.Parent.BackColor, 2))
             using (Pen penBorder = new Pen(borderColor, borderSize))
             {
-                penBorder.Alignment = PenAlignment.Inset;
-                this.Region = new Region(pathSurface);
+                // Glow Effect
+                if (isHovered && !isChecked)
+                {
+                    using (PathGradientBrush glowBrush = new PathGradientBrush(pathSurface))
+                    {
+                        glowBrush.CenterColor = Color.FromArgb(50, glowColor);
+                        glowBrush.SurroundColors = new Color[] { Color.Transparent };
+                        pevent.Graphics.FillPath(glowBrush, pathSurface);
+                    }
+                }
 
                 // Background
                 Color bgColor = isChecked ? CheckedBackColor : (isHovered ? HoverBackColor : this.BackColor);
-                using (SolidBrush brush = new SolidBrush(bgColor))
+                if (bgColor != Color.Transparent)
                 {
-                    pevent.Graphics.FillPath(brush, pathSurface);
+                    using (SolidBrush brush = new SolidBrush(bgColor))
+                    {
+                        pevent.Graphics.FillPath(brush, pathSurface);
+                    }
                 }
 
                 // Border
                 if (borderSize > 0)
+                {
+                    penBorder.Alignment = PenAlignment.Inset;
                     pevent.Graphics.DrawPath(penBorder, pathBorder);
+                }
 
                 // Text
                 Color textColor = isChecked ? CheckedForeColor : this.ForeColor;
                 TextRenderer.DrawText(pevent.Graphics, this.Text, this.Font, this.ClientRectangle, textColor,
-                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.LeftAndRightPadding);
             }
         }
 
-        private GraphicsPath GetRoundedPath(RectangleF rect, float radius)
+        private GraphicsPath GetRoundedPath(Rectangle rect, float radius)
         {
             GraphicsPath path = new GraphicsPath();
+            float curveSize = radius * 2F;
 
-            // Ensure radius is not negative or too large
             if (radius <= 0)
             {
                 path.AddRectangle(rect);
                 return path;
             }
 
-            float curveSize = radius * 2F;
-
-            // Ensure curveSize doesn't exceed rect dimensions
-            if (curveSize > rect.Width) curveSize = rect.Width;
-            if (curveSize > rect.Height) curveSize = rect.Height;
-
             path.StartFigure();
-            path.AddArc(rect.X, rect.Y, curveSize, curveSize, 180F, 90F);
-            path.AddArc(rect.Right - curveSize, rect.Y, curveSize, curveSize, 270F, 90F);
-            path.AddArc(rect.Right - curveSize, rect.Bottom - curveSize, curveSize, curveSize, 0F, 90F);
-            path.AddArc(rect.X, rect.Bottom - curveSize, curveSize, curveSize, 90F, 90F);
+            path.AddArc(rect.X, rect.Y, curveSize, curveSize, 180, 90);
+            path.AddArc(rect.Right - curveSize, rect.Y, curveSize, curveSize, 270, 90);
+            path.AddArc(rect.Right - curveSize, rect.Bottom - curveSize, curveSize, curveSize, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - curveSize, curveSize, curveSize, 90, 90);
             path.CloseFigure();
             return path;
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            using (GraphicsPath pathSurface = GetRoundedPath(this.ClientRectangle, borderRadius))
+            {
+                this.Region = new Region(pathSurface);
+            }
+            Invalidate();
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -10,6 +11,7 @@ namespace ProjectCinema.UI
         private int borderRadius = 3;
         private Color progressColor = Color.FromArgb(30, 107, 254);
         private Color backgroundColor = Color.FromArgb(30, 35, 45);
+        private Color glowColor = Color.FromArgb(100, 30, 107, 254);
 
         public int Value
         {
@@ -41,19 +43,28 @@ namespace ProjectCinema.UI
             set { backgroundColor = value; Invalidate(); }
         }
 
+        public Color GlowColor
+        {
+            get => glowColor;
+            set { glowColor = value; Invalidate(); }
+        }
+
         public CustomProgressBar()
         {
             this.DoubleBuffered = true;
-            this.Height = 6;
+            this.Height = 8;
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBilinear;
 
+            Rectangle rectBg = this.ClientRectangle;
+            
             // Background
-            using (GraphicsPath pathBg = GetRoundedPath(new RectangleF(0, 0, this.Width, this.Height), borderRadius))
+            using (GraphicsPath pathBg = GetRoundedPath(rectBg, borderRadius))
             using (SolidBrush brushBg = new SolidBrush(backgroundColor))
             {
                 e.Graphics.FillPath(brushBg, pathBg);
@@ -62,37 +73,49 @@ namespace ProjectCinema.UI
             // Progress
             if (progressValue > 0)
             {
-                float progressWidth = (float)this.Width * progressValue / 100;
-                using (GraphicsPath pathProgress = GetRoundedPath(new RectangleF(0, 0, progressWidth, this.Height), borderRadius))
-                using (SolidBrush brushProgress = new SolidBrush(progressColor))
+                int progressWidth = (int)(this.Width * progressValue / 100.0);
+                if (progressWidth < borderRadius * 2 && progressWidth > 0) progressWidth = borderRadius * 2;
+                
+                Rectangle rectProgress = new Rectangle(0, 0, progressWidth, this.Height);
+                using (GraphicsPath pathProgress = GetRoundedPath(rectProgress, borderRadius))
                 {
-                    e.Graphics.FillPath(brushProgress, pathProgress);
+                    // Glow
+                    if (progressWidth > 4)
+                    {
+                        using (PathGradientBrush glowBrush = new PathGradientBrush(pathProgress))
+                        {
+                            glowBrush.CenterColor = Color.FromArgb(60, glowColor);
+                            glowBrush.SurroundColors = new Color[] { Color.Transparent };
+                            e.Graphics.FillPath(glowBrush, pathProgress);
+                        }
+                    }
+
+                    // Foreground Gradient
+                    using (LinearGradientBrush brushProgress = new LinearGradientBrush(rectProgress, progressColor, 
+                        Color.FromArgb(200, progressColor), LinearGradientMode.Horizontal))
+                    {
+                        e.Graphics.FillPath(brushProgress, pathProgress);
+                    }
                 }
             }
         }
 
-        private GraphicsPath GetRoundedPath(RectangleF rect, float radius)
+        private GraphicsPath GetRoundedPath(Rectangle rect, float radius)
         {
             GraphicsPath path = new GraphicsPath();
+            float curveSize = radius * 2F;
 
-            // Ensure radius is not negative or too large
             if (radius <= 0)
             {
                 path.AddRectangle(rect);
                 return path;
             }
 
-            float curveSize = radius * 2F;
-
-            // Ensure curveSize doesn't exceed rect dimensions
-            if (curveSize > rect.Width) curveSize = rect.Width;
-            if (curveSize > rect.Height) curveSize = rect.Height;
-
             path.StartFigure();
-            path.AddArc(rect.X, rect.Y, curveSize, curveSize, 180F, 90F);
-            path.AddArc(rect.Right - curveSize, rect.Y, curveSize, curveSize, 270F, 90F);
-            path.AddArc(rect.Right - curveSize, rect.Bottom - curveSize, curveSize, curveSize, 0F, 90F);
-            path.AddArc(rect.X, rect.Bottom - curveSize, curveSize, curveSize, 90F, 90F);
+            path.AddArc(rect.X, rect.Y, curveSize, curveSize, 180, 90);
+            path.AddArc(rect.Right - curveSize, rect.Y, curveSize, curveSize, 270, 90);
+            path.AddArc(rect.Right - curveSize, rect.Bottom - curveSize, curveSize, curveSize, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - curveSize, curveSize, curveSize, 90, 90);
             path.CloseFigure();
             return path;
         }

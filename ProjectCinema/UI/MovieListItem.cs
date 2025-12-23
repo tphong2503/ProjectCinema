@@ -15,6 +15,7 @@ namespace ProjectCinema.UI
         public MovieListItem()
         {
             InitializeComponent();
+            this.DoubleBuffered = true;
         }
 
         private void InitializeComponent()
@@ -39,24 +40,25 @@ namespace ProjectCinema.UI
             this.mainPanel.Dock = DockStyle.Fill;
             this.mainPanel.Location = new Point(0, 0);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new Size(250, 70);
+            this.mainPanel.Size = new Size(300, 60);
             this.mainPanel.TabIndex = 0;
             // 
             // picMovie
             // 
-            this.picMovie.Location = new Point(5, 10);
+            this.picMovie.Location = new Point(5, 5);
             this.picMovie.Name = "picMovie";
-            this.picMovie.Size = new Size(40, 50);
+            this.picMovie.Size = new Size(35, 50);
             this.picMovie.SizeMode = PictureBoxSizeMode.Zoom;
             this.picMovie.TabIndex = 0;
             this.picMovie.TabStop = false;
+            this.picMovie.BackColor = Color.FromArgb(30, 35, 45); // Background for missing image
             // 
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.lblTitle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             this.lblTitle.ForeColor = Color.White;
-            this.lblTitle.Location = new Point(55, 10);
+            this.lblTitle.Location = new Point(50, 5);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new Size(91, 15);
             this.lblTitle.TabIndex = 1;
@@ -67,7 +69,7 @@ namespace ProjectCinema.UI
             this.lblInfo.AutoSize = true;
             this.lblInfo.Font = new Font("Segoe UI", 8F);
             this.lblInfo.ForeColor = Color.FromArgb(160, 165, 177);
-            this.lblInfo.Location = new Point(55, 28);
+            this.lblInfo.Location = new Point(50, 24);
             this.lblInfo.Name = "lblInfo";
             this.lblInfo.Size = new Size(78, 13);
             this.lblInfo.TabIndex = 2;
@@ -75,12 +77,13 @@ namespace ProjectCinema.UI
             // 
             // progressBar
             // 
-            this.progressBar.BorderRadius = 3;
-            this.progressBar.ProgressBackColor = Color.FromArgb(30, 35, 45);
-            this.progressBar.Location = new Point(58, 48);
+            this.progressBar.BorderRadius = 2;
+            this.progressBar.ProgressBackColor = Color.FromArgb(35, 40, 50);
+            this.progressBar.Location = new Point(52, 42);
             this.progressBar.Name = "progressBar";
             this.progressBar.ProgressColor = Color.FromArgb(30, 107, 254);
-            this.progressBar.Size = new Size(150, 6);
+            this.progressBar.GlowColor = Color.FromArgb(80, 30, 107, 254);
+            this.progressBar.Size = new Size(180, 5);
             this.progressBar.TabIndex = 3;
             this.progressBar.Value = 50;
             // 
@@ -89,7 +92,7 @@ namespace ProjectCinema.UI
             this.lblPercentage.AutoSize = true;
             this.lblPercentage.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
             this.lblPercentage.ForeColor = Color.FromArgb(160, 165, 177);
-            this.lblPercentage.Location = new Point(215, 44);
+            this.lblPercentage.Location = new Point(240, 38);
             this.lblPercentage.Name = "lblPercentage";
             this.lblPercentage.Size = new Size(29, 13);
             this.lblPercentage.TabIndex = 4;
@@ -99,7 +102,7 @@ namespace ProjectCinema.UI
             // 
             this.Controls.Add(this.mainPanel);
             this.Name = "MovieListItem";
-            this.Size = new Size(250, 70);
+            this.Size = new Size(300, 60);
             this.mainPanel.ResumeLayout(false);
             this.mainPanel.PerformLayout();
             this.ResumeLayout(false);
@@ -108,7 +111,7 @@ namespace ProjectCinema.UI
         public string MovieTitle { get => lblTitle.Text; set => lblTitle.Text = value; }
         public string MovieInfo { get => lblInfo.Text; set => lblInfo.Text = value; }
         public int Value { get => progressBar.Value; set { progressBar.Value = value; lblPercentage.Text = value + "%"; } }
-        public Color ProgressColor { get => progressBar.ProgressColor; set { progressBar.ProgressColor = value; } }
+        public Color ProgressColor { get => progressBar.ProgressColor; set { progressBar.ProgressColor = value; progressBar.GlowColor = Color.FromArgb(80, value); } }
         public Image MovieImage { get => picMovie.Image; set => picMovie.Image = value; }
     }
 }

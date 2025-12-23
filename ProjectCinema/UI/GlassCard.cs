@@ -5,19 +5,23 @@ using System.Windows.Forms;
 
 namespace ProjectCinema.UI
 {
-    public class RoundedPanel : Panel
+    public class GlassCard : Panel
     {
         private int borderRadius = 20;
-        private Color borderColor = Color.Transparent;
-        private int borderSize = 0;
-        private Color gradientColor1 = Color.FromArgb(19, 23, 32);
-        private Color gradientColor2 = Color.FromArgb(19, 23, 32);
-        private float gradientAngle = 0f;
+        private Color glassColor = Color.FromArgb(40, 255, 255, 255);
+        private Color borderColor = Color.FromArgb(80, 255, 255, 255);
+        private int borderSize = 1;
 
         public int BorderRadius
         {
             get => borderRadius;
             set { borderRadius = value; Invalidate(); }
+        }
+
+        public Color GlassColor
+        {
+            get => glassColor;
+            set { glassColor = value; Invalidate(); }
         }
 
         public Color BorderColor
@@ -32,27 +36,9 @@ namespace ProjectCinema.UI
             set { borderSize = value; Invalidate(); }
         }
 
-        public Color GradientColor1
+        public GlassCard()
         {
-            get => gradientColor1;
-            set { gradientColor1 = value; Invalidate(); }
-        }
-
-        public Color GradientColor2
-        {
-            get => gradientColor2;
-            set { gradientColor2 = value; Invalidate(); }
-        }
-
-        public float GradientAngle
-        {
-            get => gradientAngle;
-            set { gradientAngle = value; Invalidate(); }
-        }
-
-        public RoundedPanel()
-        {
-            this.BackColor = Color.FromArgb(19, 23, 32);
+            this.BackColor = Color.Transparent;
             this.DoubleBuffered = true;
         }
 
@@ -60,20 +46,20 @@ namespace ProjectCinema.UI
         {
             base.OnPaint(e);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBilinear;
-            e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
             Rectangle rectSurface = this.ClientRectangle;
             Rectangle rectBorder = rectSurface;
-            rectBorder.Inflate(-1, -1);
+            rectBorder.Inflate(-borderSize, -borderSize);
 
             using (GraphicsPath pathSurface = GetRoundedPath(rectSurface, borderRadius))
-            using (GraphicsPath pathBorder = GetRoundedPath(rectBorder, borderRadius - 1))
-            using (LinearGradientBrush brushGradient = new LinearGradientBrush(rectSurface, gradientColor1, gradientColor2, gradientAngle))
+            using (GraphicsPath pathBorder = GetRoundedPath(rectBorder, borderRadius - borderSize))
+            using (SolidBrush brushGlass = new SolidBrush(glassColor))
             using (Pen penBorder = new Pen(borderColor, borderSize))
             {
-                e.Graphics.FillPath(brushGradient, pathSurface);
+                // Draw Glass Background
+                e.Graphics.FillPath(brushGlass, pathSurface);
 
+                // Draw Border
                 if (borderSize > 0)
                 {
                     penBorder.Alignment = PenAlignment.Inset;
