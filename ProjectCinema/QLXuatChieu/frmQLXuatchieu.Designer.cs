@@ -1,4 +1,4 @@
-﻿namespace QLRP.GUI
+﻿namespace ProjectCinema
 {
     partial class frmQLSuatChieu
     {

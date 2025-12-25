@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cinema Room Manager</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-dark": "#192233",
+                        "border-dark": "#324467",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 0.5rem;
+        }
+        /* Custom scrollbar for dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111722; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #324467; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5e85; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- Sidebar Navigation -->
+<div class="w-[280px] bg-[#111722] border-r border-border-dark flex flex-col justify-between shrink-0 h-full overflow-y-auto">
+<div class="flex flex-col gap-4 p-4">
+<!-- Branding -->
+<div class="flex gap-3 items-center mb-4">
+<div class="bg-center bg-no-repeat bg-cover rounded-xl size-10 shadow-lg shadow-primary/20" data-alt="Abstract colorful gradient representing cinema magic" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBfki9mbqgfBV_awZZQX4NtC0sr9w5jcekE1d4IHexyAlpT723MD0aKvqtWIeomqzS1TBcWzT-i53SZ8qjRWjQb00S5EnUqFVshgULhmuk94feATBUfEza4rabZl39V-cALSgIFNo6r5zGyN6Nah_hOr5mhG9Ncj8m_oz1M8sRHo8b9GFWEhCE9xz4C4NMxeMhbPV0S-ne3nbT8wM8k6tSpFQGf3XE_MZhctOtY7C8ZLZxS6ehwWrLXJdIp4Qz-psTvcNUGSpOIfns");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-bold leading-tight">CineManager</h1>
+<p class="text-[#92a4c9] text-xs font-normal">Admin Panel</p>
+</div>
+</div>
+<!-- Navigation Items -->
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#92a4c9] hover:bg-surface-dark hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">donut_small</span>
+<span class="text-sm font-medium">Tổng quan</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#92a4c9] hover:bg-surface-dark hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">calendar_month</span>
+<span class="text-sm font-medium">Lịch chiếu</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#92a4c9] hover:bg-surface-dark hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">movie</span>
+<span class="text-sm font-medium">Phim</span>
+</a>
+<!-- Active Item -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary text-white shadow-md shadow-primary/20" href="#">
+<span class="material-symbols-outlined text-[24px] fill-1">chair</span>
+<span class="text-sm font-bold">Phòng chiếu</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#92a4c9] hover:bg-surface-dark hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">confirmation_number</span>
+<span class="text-sm font-medium">Vé đã bán</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#92a4c9] hover:bg-surface-dark hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">bar_chart</span>
+<span class="text-sm font-medium">Báo cáo</span>
+</a>
+</nav>
+</div>
+<!-- User Profile -->
+<div class="p-4 border-t border-border-dark">
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-dark cursor-pointer transition-colors">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-9 border-2 border-border-dark" data-alt="Portrait of admin user" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAbQUi0V7bTnQ_tdMF6HFGuj-qwoNvyQ6tKKRwF2wEWnZ05CZOvbh2Rn_4u3CFv-HuFHC1ueugV552cih6hyBYaXKa1b9IQG8XfrvmENUnTMa31Nyt9kL1fVtLaExyNpRyxsCw1cBhuGjTP7w_he70f5KKA_PjafTV-gftt5hsfsgJ0cJutzFZO7pFFUcnI8A-Jt9BXuUKGHi5WZO7V_msUjwupv1FGApCo28FvVAzgoeZehyxtMmPNUdz2wLLOUC9dkm4gia1w7b4");'></div>
+<div class="flex flex-col flex-1 min-w-0">
+<p class="text-white text-sm font-medium truncate">Nguyễn Văn A</p>
+<p class="text-[#92a4c9] text-xs truncate">Quản lý rạp</p>
+</div>
+<span class="material-symbols-outlined text-[#92a4c9] text-[20px]">settings</span>
+</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full bg-[#101622] overflow-hidden">
+<!-- Top Header -->
+<header class="px-6 py-4 border-b border-border-dark bg-[#111722]/50 backdrop-blur-sm z-10">
+<div class="flex flex-wrap justify-between items-center gap-4">
+<div>
+<h2 class="text-white text-2xl font-black tracking-tight">Quản lý phòng chiếu</h2>
+<p class="text-[#92a4c9] text-sm mt-1">Danh sách và cấu hình sơ đồ ghế ngồi</p>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-blue-600 text-white text-sm font-bold px-4 py-2.5 rounded-lg transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>Thêm phòng mới</span>
+</button>
+</div>
+</header>
+<!-- Workspace: Master-Detail Layout -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Left Panel: Room List -->
+<aside class="w-[360px] flex flex-col border-r border-border-dark bg-[#111722]/30">
+<!-- Search Filter -->
+<div class="p-4 border-b border-border-dark space-y-3">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#92a4c9] text-[20px]">search</span>
+<input class="w-full bg-surface-dark border border-border-dark rounded-lg pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary placeholder-[#92a4c9]" placeholder="Tìm kiếm phòng..." type="text"/>
+</div>
+<div class="flex gap-2">
+<select class="flex-1 bg-surface-dark border border-border-dark rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary">
+<option>Tất cả loại</option>
+<option>IMAX</option>
+<option>Standard</option>
+<option>Gold Class</option>
+</select>
+</div>
+</div>
+<!-- Room List Scrollable -->
+<div class="flex-1 overflow-y-auto p-3 space-y-2">
+<!-- Active Item -->
+<div class="p-3 rounded-xl bg-surface-dark border border-primary/50 cursor-pointer shadow-md group relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex justify-between items-start mb-2 pl-2">
+<div>
+<h3 class="text-white font-bold text-base">Phòng 01</h3>
+<span class="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">IMAX Laser</span>
+</div>
+<span class="material-symbols-outlined text-primary">edit_square</span>
+</div>
+<div class="flex items-center gap-4 text-xs text-[#92a4c9] pl-2">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">event_seat</span>
+<span>156 Ghế</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-green-500">check_circle</span>
+<span class="text-green-500">Hoạt động</span>
+</div>
+</div>
+</div>
+<!-- Inactive Item -->
+<div class="p-3 rounded-xl border border-transparent hover:bg-surface-dark hover:border-border-dark cursor-pointer transition-all pl-4">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="text-white font-medium text-base">Phòng 02</h3>
+<span class="text-xs text-[#92a4c9] bg-white/5 px-2 py-0.5 rounded border border-white/10">Standard 2D</span>
+</div>
+</div>
+<div class="flex items-center gap-4 text-xs text-[#92a4c9]">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">event_seat</span>
+<span>98 Ghế</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-green-500">check_circle</span>
+<span>Hoạt động</span>
+</div>
+</div>
+</div>
+<!-- Inactive Item -->
+<div class="p-3 rounded-xl border border-transparent hover:bg-surface-dark hover:border-border-dark cursor-pointer transition-all pl-4">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="text-white font-medium text-base">Phòng 03 (VIP)</h3>
+<span class="text-xs text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Gold Class</span>
+</div>
+</div>
+<div class="flex items-center gap-4 text-xs text-[#92a4c9]">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">event_seat</span>
+<span>45 Ghế</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-yellow-500">build</span>
+<span class="text-yellow-500">Bảo trì</span>
+</div>
+</div>
+</div>
+<!-- Inactive Item -->
+<div class="p-3 rounded-xl border border-transparent hover:bg-surface-dark hover:border-border-dark cursor-pointer transition-all pl-4">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="text-white font-medium text-base">Phòng 04</h3>
+<span class="text-xs text-[#92a4c9] bg-white/5 px-2 py-0.5 rounded border border-white/10">Standard 2D</span>
+</div>
+</div>
+<div class="flex items-center gap-4 text-xs text-[#92a4c9]">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">event_seat</span>
+<span>110 Ghế</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-green-500">check_circle</span>
+<span>Hoạt động</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Right Panel: Room Detail & Seat Map -->
+<div class="flex-1 flex flex-col h-full overflow-hidden bg-background-dark relative">
+<!-- Detail Header -->
+<div class="px-8 py-5 flex justify-between items-end border-b border-border-dark bg-[#111722]/30">
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h2 class="text-white text-xl font-bold">Chi tiết Phòng 01</h2>
+<span class="bg-green-500/10 text-green-500 border border-green-500/20 text-xs font-bold px-2 py-0.5 rounded">Đang hoạt động</span>
+</div>
+<div class="flex gap-6 text-sm text-[#92a4c9]">
+<span>Máy chiếu: <strong class="text-white">IMAX 4K Laser</strong></span>
+<span>Âm thanh: <strong class="text-white">Dolby Atmos 7.1</strong></span>
+<span>Diện tích: <strong class="text-white">120m²</strong></span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center gap-2 bg-[#232f48] hover:bg-[#2f3e5c] text-white text-sm font-medium px-4 py-2 rounded-lg border border-border-dark transition-colors">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span>Cấu hình</span>
+</button>
+<button class="flex items-center gap-2 bg-[#232f48] hover:bg-[#2f3e5c] text-white text-sm font-medium px-4 py-2 rounded-lg border border-border-dark transition-colors">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span>Lưu thay đổi</span>
+</button>
+</div>
+</div>
+<!-- Main Editor Area -->
+<div class="flex-1 overflow-y-auto p-8 flex flex-col items-center">
+<!-- Screen Visualization -->
+<div class="w-full max-w-4xl mb-12 flex flex-col items-center">
+<div class="w-2/3 h-2 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full mb-2 shadow-[0_0_20px_rgba(17,82,212,0.6)]"></div>
+<div class="text-[#92a4c9] text-xs uppercase tracking-[0.2em] font-medium">Màn hình chiếu</div>
+<!-- Ambient Glow for Screen -->
+<div class="w-1/2 h-24 bg-primary/5 blur-3xl absolute top-32 pointer-events-none rounded-full"></div>
+</div>
+<!-- Seat Map Grid -->
+<div class="relative bg-[#151c2b] border border-border-dark p-8 rounded-2xl shadow-2xl">
+<!-- Row Labels Left -->
+<div class="absolute left-2 top-8 bottom-8 flex flex-col justify-between text-[#92a4c9] text-xs font-bold w-4 items-center pt-2">
+<span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span>
+</div>
+<div class="grid grid-cols-12 gap-3 pl-6">
+<!-- Row A (Standard) -->
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">A1</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">A2</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">A3</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">A4</span>
+</button>
+<div class="col-span-4"></div> <!-- Aisle -->
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">A9</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">A10</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">A11</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">A12</span>
+</button>
+<!-- Row B (Standard) -->
+<!-- Simplified loop logic for demo -->
+<button class="col-start-1 group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<div class="col-span-4"></div> <!-- Aisle -->
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<!-- Row C (Full) -->
+<button class="col-start-1 group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-surface-dark hover:bg-primary transition-colors cursor-pointer border border-border-dark hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-[#92a4c9] group-hover:text-white">chair</span>
+</button>
+<!-- Row D (VIP) -->
+<button class="col-start-1 group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<!-- Row E (VIP - Selected) -->
+<button class="col-start-1 group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<!-- Selected Chair -->
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary transition-colors cursor-pointer border border-primary ring-2 ring-white/50">
+<span class="material-symbols-outlined text-[20px] text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<!-- Broken Chair -->
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-red-500/10 hover:bg-red-500 transition-colors cursor-not-allowed border border-red-500/30">
+<span class="material-symbols-outlined text-[20px] text-red-500 group-hover:text-white">chair_alt</span>
+<span class="absolute -top-1 -right-1 size-2 bg-red-500 rounded-full"></span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<!-- Row F-G (VIP) - Skipped for brevity, just one more VIP Row -->
+<button class="col-start-1 group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<div class="col-span-8"></div>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<button class="group relative flex flex-col items-center justify-center size-8 rounded bg-primary/20 hover:bg-primary transition-colors cursor-pointer border border-primary/50 hover:border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary group-hover:text-white">chair</span>
+</button>
+<!-- Row H (Couple - Double Seats) -->
+<div class="col-span-12 h-4"></div>
+<button class="col-start-2 col-span-2 group relative flex flex-row items-center justify-center h-8 w-full rounded bg-pink-500/10 hover:bg-pink-500 transition-colors cursor-pointer border border-pink-500/30 hover:border-pink-500">
+<span class="material-symbols-outlined text-[20px] text-pink-500 group-hover:text-white mr-1">weekend</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">H1-2</span>
+</button>
+<button class="col-span-2 group relative flex flex-row items-center justify-center h-8 w-full rounded bg-pink-500/10 hover:bg-pink-500 transition-colors cursor-pointer border border-pink-500/30 hover:border-pink-500">
+<span class="material-symbols-outlined text-[20px] text-pink-500 group-hover:text-white mr-1">weekend</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">H3-4</span>
+</button>
+<button class="col-span-2 group relative flex flex-row items-center justify-center h-8 w-full rounded bg-pink-500/10 hover:bg-pink-500 transition-colors cursor-pointer border border-pink-500/30 hover:border-pink-500">
+<span class="material-symbols-outlined text-[20px] text-pink-500 group-hover:text-white mr-1">weekend</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">H5-6</span>
+</button>
+<button class="col-span-2 group relative flex flex-row items-center justify-center h-8 w-full rounded bg-pink-500/10 hover:bg-pink-500 transition-colors cursor-pointer border border-pink-500/30 hover:border-pink-500">
+<span class="material-symbols-outlined text-[20px] text-pink-500 group-hover:text-white mr-1">weekend</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">H7-8</span>
+</button>
+<button class="col-span-2 group relative flex flex-row items-center justify-center h-8 w-full rounded bg-pink-500/10 hover:bg-pink-500 transition-colors cursor-pointer border border-pink-500/30 hover:border-pink-500">
+<span class="material-symbols-outlined text-[20px] text-pink-500 group-hover:text-white mr-1">weekend</span>
+<span class="text-[8px] text-[#556987] absolute -bottom-3">H9-10</span>
+</button>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex gap-6 mt-12 bg-surface-dark p-3 rounded-xl border border-border-dark">
+<div class="flex items-center gap-2">
+<div class="size-4 rounded bg-surface-dark border border-[#92a4c9]"></div>
+<span class="text-xs text-[#92a4c9]">Thường</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-4 rounded bg-primary/20 border border-primary"></div>
+<span class="text-xs text-[#92a4c9]">VIP</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-4 rounded bg-pink-500/20 border border-pink-500"></div>
+<span class="text-xs text-[#92a4c9]">Couple</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-4 rounded bg-red-500/20 border border-red-500"></div>
+<span class="text-xs text-[#92a4c9]">Bảo trì</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-4 rounded bg-primary border border-white"></div>
+<span class="text-xs text-[#92a4c9]">Đang chọn</span>
+</div>
+</div>
+</div>
+<!-- Bottom Config Panel -->
+<div class="h-auto bg-[#111722] border-t border-border-dark p-6 transition-all">
+<h3 class="text-white text-sm font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">tune</span>
+                            Thuộc tính ghế đang chọn (E2)
+                        </h3>
+<div class="flex flex-wrap gap-4">
+<div class="flex flex-col min-w-[200px]">
+<label class="text-[#92a4c9] text-xs font-medium mb-1.5">Loại ghế</label>
+<div class="relative">
+<select class="w-full bg-surface-dark border border-border-dark rounded-lg px-3 py-2 text-sm text-white focus:border-primary focus:ring-0">
+<option value="standard">Ghế thường (Standard)</option>
+<option selected="" value="vip">Ghế VIP</option>
+<option value="couple">Ghế đôi (Couple)</option>
+</select>
+</div>
+</div>
+<div class="flex flex-col min-w-[150px]">
+<label class="text-[#92a4c9] text-xs font-medium mb-1.5">Trạng thái</label>
+<div class="relative">
+<select class="w-full bg-surface-dark border border-border-dark rounded-lg px-3 py-2 text-sm text-white focus:border-primary focus:ring-0">
+<option selected="" value="active">Khả dụng</option>
+<option value="maintenance">Đang bảo trì</option>
+<option value="blocked">Đã khóa</option>
+</select>
+</div>
+</div>
+<div class="flex flex-col min-w-[120px]">
+<label class="text-[#92a4c9] text-xs font-medium mb-1.5">Giá vé cơ bản</label>
+<div class="relative">
+<input class="w-full bg-surface-dark border border-border-dark rounded-lg px-3 py-2 text-sm text-white focus:border-primary focus:ring-0 text-right" type="text" value="120,000"/>
+<span class="absolute right-8 top-1/2 -translate-y-1/2 text-[#92a4c9] text-xs">đ</span>
+</div>
+</div>
+<div class="flex items-end">
+<button class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg text-sm font-medium border border-red-500/20 transition-colors">
+                                    Xóa ghế
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

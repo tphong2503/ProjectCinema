@@ -1,4 +1,4 @@
-﻿namespace QLRP
+﻿namespace ProjectCinema
 {
     partial class frmQLPhim
     {

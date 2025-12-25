@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Đăng nhập hệ thống - Quản lý rạp chiếu phim</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "card-dark": "#161e2d",
+                        "input-dark": "#1e293b",
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #101622; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+        
+        .glass-effect {
+            background: rgba(22, 30, 45, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen flex flex-col">
+<!-- Main Container -->
+<div class="relative flex min-h-screen w-full flex-col overflow-hidden items-center justify-center p-4">
+<!-- Background Image/Overlay -->
+<div class="absolute inset-0 z-0">
+<img alt="Blurred cinema theater background with dark red curtains and ambient lighting" class="w-full h-full object-cover opacity-20" data-alt="Blurred cinema theater background with dark red curtains and ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuUtbov8lvZkj9YS0O56nlNSosxI5UKD9wM1hjWVIHXMFA2A5ZEflflubsCoUUDarP8YR7y9aBKubnMExSGQqsNmutSxmgBnLcIRiLWEJuj9L_k6xMmBfjwsosuLmUIIndSsNngrzrFMtg-pwN9VLOdQdSQNePq1tSydCY1hnx4OiBCN7cbeLnsdE1UZvPF8eYYThosyA8h-5WChityUam0boiF9DlFtfpoyKOAhIfrIMRTC-Zfq65PIZRckn4lo_XqsWK4Z9fjHQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/90 to-background-dark/60"></div>
+</div>
+<!-- Login Card -->
+<div class="relative z-10 w-full max-w-[480px] glass-effect dark:border-border-dark/50 border border-gray-200 rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
+<!-- Decorative Top Bar -->
+<div class="h-2 w-full bg-gradient-to-r from-primary/60 via-primary to-primary/60"></div>
+<div class="p-8 sm:p-10 flex flex-col gap-6">
+<!-- Header Section -->
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 border border-primary/20 shadow-inner">
+<span class="material-symbols-outlined text-primary text-4xl">movie</span>
+</div>
+<h2 class="text-gray-900 dark:text-white text-3xl font-bold tracking-tight mb-2">Đăng nhập hệ thống</h2>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal">
+                        Phần mềm quản lý rạp chiếu phim
+                    </p>
+</div>
+<!-- Form Section -->
+<form class="flex flex-col gap-5 mt-2" onsubmit="event.preventDefault();">
+<!-- Username Input -->
+<div class="space-y-2">
+<label class="text-gray-700 dark:text-gray-300 text-sm font-medium leading-none" for="username">
+                            Tên đăng nhập
+                        </label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-gray-400 dark:text-gray-500 text-[20px]">person</span>
+</div>
+<input class="w-full h-12 pl-11 pr-4 rounded-lg bg-gray-50 dark:bg-input-dark border border-gray-200 dark:border-border-dark text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 font-normal" id="username" placeholder="Nhập tên đăng nhập hoặc email" type="text"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<label class="text-gray-700 dark:text-gray-300 text-sm font-medium leading-none" for="password">
+                                Mật khẩu
+                            </label>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-gray-400 dark:text-gray-500 text-[20px]">lock</span>
+</div>
+<input class="w-full h-12 pl-11 pr-12 rounded-lg bg-gray-50 dark:bg-input-dark border border-gray-200 dark:border-border-dark text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 font-normal" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute inset-y-0 right-0 pr-3 flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility_off</span>
+</button>
+</div>
+<div class="flex justify-end pt-1">
+<a class="text-sm font-medium text-primary hover:text-primary/80 transition-colors hover:underline" href="#">
+                                Quên mật khẩu?
+                            </a>
+</div>
+</div>
+<!-- Login Button -->
+<button class="mt-2 w-full h-12 bg-primary hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all duration-200 flex items-center justify-center gap-2 group">
+<span>Đăng nhập</span>
+<span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</form>
+<!-- Footer / Help -->
+<div class="mt-2 pt-6 border-t border-gray-200 dark:border-border-dark/50 text-center">
+<p class="text-gray-500 dark:text-gray-400 text-sm">
+                        Cần hỗ trợ? <a class="text-primary hover:underline font-medium" href="#">Liên hệ quản lý kỹ thuật</a>
+</p>
+</div>
+</div>
+</div>
+<!-- Small branding footer -->
+<div class="relative z-10 mt-8 text-center opacity-60">
+<p class="text-gray-400 dark:text-gray-600 text-xs font-medium uppercase tracking-widest">
+                Cinema Management System v2.0
+            </p>
+</div>
+</div>
+</body></html>

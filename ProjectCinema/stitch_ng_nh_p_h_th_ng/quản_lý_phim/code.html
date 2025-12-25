@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CinemaAdmin - Quản lý phim</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-dark": "#1c2536", // Slightly lighter than background-dark
+                        "surface-highlight": "#232f48", // Used for inputs/hovers
+                        "text-secondary": "#92a4c9",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #101622; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232f48; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #344361; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display h-screen w-screen overflow-hidden flex selection:bg-primary selection:text-white">
+<!-- Sidebar -->
+<aside class="hidden md:flex flex-col w-64 bg-background-dark border-r border-surface-highlight shrink-0 transition-all duration-300">
+<div class="p-6 pb-2">
+<div class="flex flex-col">
+<h1 class="text-white text-xl font-bold leading-normal tracking-tight">Cinema<span class="text-primary">Admin</span></h1>
+<p class="text-text-secondary text-xs font-normal mt-1">Management Portal</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-2 px-4 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-text-secondary hover:bg-surface-highlight hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">dashboard</span>
+<span class="text-sm font-medium">Tổng quan</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-[0_0_15px_rgba(17,82,212,0.15)]" href="#">
+<span class="material-symbols-outlined fill-1">movie</span>
+<span class="text-sm font-bold">Quản lý phim</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-text-secondary hover:bg-surface-highlight hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">calendar_month</span>
+<span class="text-sm font-medium">Lịch chiếu</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-text-secondary hover:bg-surface-highlight hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">confirmation_number</span>
+<span class="text-sm font-medium">Vé &amp; Doanh thu</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-text-secondary hover:bg-surface-highlight hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">group</span>
+<span class="text-sm font-medium">Nhân viên</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-text-secondary hover:bg-surface-highlight hover:text-white transition-colors group mt-auto" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">settings</span>
+<span class="text-sm font-medium">Cài đặt</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Top Navbar -->
+<header class="flex items-center justify-between px-6 py-4 bg-background-dark/80 backdrop-blur-md border-b border-surface-highlight z-20 sticky top-0">
+<div class="flex items-center gap-4 text-white">
+<button class="md:hidden text-text-secondary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="flex flex-col">
+<h2 class="text-white text-lg font-bold leading-tight">Danh sách phim</h2>
+<p class="text-text-secondary text-xs">Quản lý kho phim và thông tin chi tiết</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-surface-highlight rounded-full border border-white/5">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-xs text-text-secondary font-medium">Hệ thống ổn định</span>
+</div>
+<div class="h-8 w-[1px] bg-surface-highlight hidden md:block"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-white text-sm font-bold">Admin User</p>
+<p class="text-text-secondary text-xs">Quản lý rạp</p>
+</div>
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 border-2 border-primary cursor-pointer shadow-lg shadow-primary/20" data-alt="Avatar of the current user" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_QwN6x5xu-ktEtyy78fvlSwzap0KJzFz7R_NrzQIsVqGcepKjAE3Wrhrmha2tePz8CzmB-nmsS8UjIiOGg0u8CBGUiF2mTQ6nsjtwfIMbHwAVGne98sV3Q1k27a8Ad7JOP7NQrfbZV4CqjdeZFoOlLmmHOGOaisVkc8gGDapJqJcL_j6U3R18nF6Vuwii6zJoi6a8A68uu-x7W4Hl6vz5Nu4iuyxtmt5ZVwt3Oyk29KO0HCfubQpBs9yFAHtyPY983Ss6ueTJgO8");'>
+</div>
+</div>
+</div>
+</header>
+<!-- Scrollable Body -->
+<div class="flex-1 overflow-y-auto p-4 lg:p-6 pb-20 scroll-smooth">
+<!-- Actions & Filters Toolbar -->
+<div class="flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center mb-6">
+<!-- Search -->
+<div class="w-full xl:w-auto min-w-[320px]">
+<div class="flex w-full items-center rounded-lg bg-surface-highlight h-10 border border-white/5 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+<span class="material-symbols-outlined text-text-secondary pl-3">search</span>
+<input class="w-full bg-transparent border-none text-white placeholder-text-secondary focus:ring-0 text-sm h-full" placeholder="Tìm kiếm theo tên phim, đạo diễn..."/>
+</div>
+</div>
+<!-- Filters & Main Action -->
+<div class="flex flex-wrap items-center gap-3 w-full xl:w-auto">
+<div class="flex gap-2 overflow-x-auto no-scrollbar">
+<button class="flex items-center justify-center px-4 h-9 rounded-lg bg-primary text-white text-sm font-medium whitespace-nowrap shadow-lg shadow-primary/25">
+                            Tất cả
+                        </button>
+<button class="flex items-center justify-center px-4 h-9 rounded-lg bg-surface-highlight hover:bg-surface-highlight/80 text-text-secondary hover:text-white text-sm font-medium whitespace-nowrap transition-colors border border-white/5">
+                            Đang chiếu
+                        </button>
+<button class="flex items-center justify-center px-4 h-9 rounded-lg bg-surface-highlight hover:bg-surface-highlight/80 text-text-secondary hover:text-white text-sm font-medium whitespace-nowrap transition-colors border border-white/5">
+                            Sắp chiếu
+                        </button>
+<button class="flex items-center justify-center px-4 h-9 rounded-lg bg-surface-highlight hover:bg-surface-highlight/80 text-text-secondary hover:text-white text-sm font-medium whitespace-nowrap transition-colors border border-white/5">
+                            Ngưng chiếu
+                        </button>
+</div>
+<div class="w-[1px] h-8 bg-surface-highlight mx-1 hidden sm:block"></div>
+<button class="hidden sm:flex items-center gap-2 px-4 h-9 bg-white text-background-dark rounded-lg text-sm font-bold hover:bg-gray-100 transition-colors shadow-lg shadow-white/10">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>Thêm phim</span>
+</button>
+</div>
+</div>
+<!-- Content Layout: Grid + Editor -->
+<div class="grid grid-cols-12 gap-6 items-start">
+<!-- Movie List (Grid) -->
+<div class="col-span-12 lg:col-span-7 xl:col-span-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+<!-- Card 1 -->
+<div class="group flex flex-col bg-surface-dark rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all hover:shadow-[0_0_20px_rgba(17,82,212,0.15)] cursor-pointer">
+<div class="relative aspect-[2/3] w-full overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Poster for movie Avatar: The Way of Water" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDBhsR9MGaLdireqQzJpLakve5aH3etTQXz9oDB9AgK4Wp4_3wfMmD-bDBaK-aI93EzcvhaKQKylxI39ToRAL0XNGetekeWUj_sMzdD1skuCuEq6rlqdgTDsbNcY7j4BFp49TWmS0XtDF1ZqLc3-3g9wZWcBr3hhdaw3ba5rIkm5p9hClfmlE3MFcjtz71c8Nt1EaY6IHGpFRd-OzpNXNxxGXRsFt42zut429EvmRmUp1DGHg29eZGSEdzy1wQs33ABUALmKvQGvtQ");'>
+</div>
+<div class="absolute top-2 right-2 px-2 py-1 rounded bg-green-500/90 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
+                                Đang chiếu
+                            </div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent opacity-60"></div>
+</div>
+<div class="p-4 flex flex-col gap-2 relative">
+<h3 class="text-white text-base font-bold truncate group-hover:text-primary transition-colors">Avatar: The Way of Water</h3>
+<div class="flex items-center text-xs text-text-secondary gap-3">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span>192 phút</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">theaters</span>
+<span>Sci-Fi</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group flex flex-col bg-surface-dark rounded-xl overflow-hidden border border-primary ring-1 ring-primary/30 shadow-lg shadow-primary/10 cursor-pointer">
+<div class="relative aspect-[2/3] w-full overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Poster for movie Oppenheimer" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC1n-_F0lgD1WeXbX_z5fU5g-ZasiHtLwDoIdbWmeVZEhwWjRGPWB7mG6aGojhwFZGQCWycNqqGOe41bVCxilNxEfHZKcEEszzcnHvGlKuHmBfskPuEzDytBNMR-O_qOTNj303yADbu4a_ZItH44yMEnAEFf3Ohbx7qyW5Q03j-HBAWFyJgAIEUXOniDIqu_ERu7oSPTRY5G0h42MLW6IhTinm54W3XjQhXOlykeL9TPa_vmmfRx8GrfdugL44sHRr3tPAWLzjSyCs");'>
+</div>
+<div class="absolute top-2 right-2 px-2 py-1 rounded bg-orange-500/90 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
+                                Sắp chiếu
+                            </div>
+<div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[2px]">
+<span class="bg-primary text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">Chỉnh sửa</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2 bg-surface-highlight/30">
+<h3 class="text-white text-base font-bold truncate text-primary">Oppenheimer</h3>
+<div class="flex items-center text-xs text-text-secondary gap-3">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span>180 phút</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">theaters</span>
+<span>Biopic</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group flex flex-col bg-surface-dark rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all hover:shadow-[0_0_20px_rgba(17,82,212,0.15)] cursor-pointer">
+<div class="relative aspect-[2/3] w-full overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Poster for movie Kung Fu Panda 4" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBmuLveyFD7WIxn0ZYwa9lNZ7RaocqJSyE5uGO1Mm7BvseM-n5anCGV7tbok6eErJuSIKSKTskXQYufinLwVUjxfYyTx9u8DnyRbhhQeMxo4tvnmsvGWLXfUsnUVc9pl9aKRQ7wNPlYS8-39YwwDfrfUy23__TgT_mC8e23cHvUk9iWl3YNMgDcZb-E853dqn5SFRzPSg4z5mCLRzoLAOmbIeS9wOtKA26KXzU6t8zQFFqicmI9QbJ-4ntjWEDV_N6Nx-EzU5eKgow");'>
+</div>
+<div class="absolute top-2 right-2 px-2 py-1 rounded bg-green-500/90 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
+                                Đang chiếu
+                            </div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<h3 class="text-white text-base font-bold truncate group-hover:text-primary transition-colors">Kung Fu Panda 4</h3>
+<div class="flex items-center text-xs text-text-secondary gap-3">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span>94 phút</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">theaters</span>
+<span>Hoạt hình</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group flex flex-col bg-surface-dark rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all hover:shadow-[0_0_20px_rgba(17,82,212,0.15)] cursor-pointer">
+<div class="relative aspect-[2/3] w-full overflow-hidden grayscale">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Poster for movie The Godfather" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAmQ7b9JyHcJuNd_0m9tqvQp6qr0DtXu_6MHk4sSHkupigWubx8sROEtztFH4rjJxUVitABLGJ5J4xBZlWPfit0rh0VO-q-dPSheYG1YhqijKI3_RHW3fjf7pYwOw7jdB81ggTMx2fywEOGb_C8c6ZwHnj0m7swIDt2KnHQR6OAKMIUE3UqEjl1QHILntrf5int8PcvuSMhhpuJklLgXloThINv02Ukscua1lb1JjqjBa73egXzaxGRtHYQqn5qTuf_fxTp_wvFxPw");'>
+</div>
+<div class="absolute top-2 right-2 px-2 py-1 rounded bg-gray-600/90 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
+                                Ngưng chiếu
+                            </div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<h3 class="text-white text-base font-bold truncate group-hover:text-primary transition-colors">Bố Già (The Godfather)</h3>
+<div class="flex items-center text-xs text-text-secondary gap-3">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span>175 phút</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">theaters</span>
+<span>Crime</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Editor Panel (Right Side) -->
+<div class="col-span-12 lg:col-span-5 xl:col-span-4 relative">
+<div class="sticky top-0 bg-surface-dark rounded-xl border border-white/10 shadow-2xl flex flex-col overflow-hidden">
+<!-- Panel Header -->
+<div class="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-surface-highlight/30">
+<h3 class="text-white text-lg font-bold">Chỉnh sửa phim</h3>
+<div class="flex gap-2">
+<button class="p-1.5 text-text-secondary hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors" title="Xóa phim">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+<button class="p-1.5 text-text-secondary hover:text-white hover:bg-white/10 rounded-lg transition-colors" title="Đóng">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+<!-- Form Content -->
+<div class="p-5 flex flex-col gap-5 max-h-[calc(100vh-180px)] overflow-y-auto custom-scrollbar">
+<!-- Poster Upload -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider">Poster phim</label>
+<div class="flex gap-4">
+<div class="w-24 aspect-[2/3] bg-surface-highlight rounded-lg overflow-hidden shrink-0 border border-white/10 relative group cursor-pointer">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Preview of current movie poster" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAlCfjmgEBGiKh88zNf6E8B4DjXxuZ_HSlxhdb4wfE6z3rMUGzOfN9hojtjSe3K0MF2ITpnnSV-10HPSMfjEaXGuYZxT83haTtzt1sdW0d-ticzll5c3ghBe9QMiGMdIMY5fI5BktJd5Tft0BQuiaDIiDLxSXpaKvBE6ZH0M0esRS05rEsaoXy12_qgPs8uS0RatW_qdyt2wGN_gBLwz4w84j0d6a6HbKBp0e8mqJB5HpIifDEG1ZXIyyXN50YY2Ep5tl3bzjgHMTs");'></div>
+<div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+<span class="material-symbols-outlined text-white">edit</span>
+</div>
+</div>
+<div class="flex flex-col justify-center gap-2 flex-1">
+<div class="h-10 w-full border border-dashed border-white/20 rounded-lg flex items-center justify-center text-text-secondary hover:border-primary hover:text-primary transition-colors cursor-pointer text-sm">
+<span class="material-symbols-outlined text-[18px] mr-2">upload_file</span> Tải ảnh lên
+                                        </div>
+<p class="text-[10px] text-text-secondary">Định dạng: JPG, PNG. Tối đa 5MB. Tỉ lệ 2:3.</p>
+</div>
+</div>
+</div>
+<!-- Basic Info -->
+<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider">Tên phim <span class="text-red-500">*</span></label>
+<input class="bg-surface-highlight border-transparent focus:border-primary focus:ring-0 rounded-lg text-white text-sm placeholder-text-secondary/50 font-medium h-10 w-full transition-colors" type="text" value="Oppenheimer"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider">Thời lượng (phút)</label>
+<div class="relative">
+<input class="bg-surface-highlight border-transparent focus:border-primary focus:ring-0 rounded-lg text-white text-sm font-medium h-10 w-full pr-8" type="number" value="180"/>
+<span class="absolute right-3 top-2.5 text-xs text-text-secondary pointer-events-none">ph</span>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider">Thể loại</label>
+<select class="bg-surface-highlight border-transparent focus:border-primary focus:ring-0 rounded-lg text-white text-sm font-medium h-10 w-full">
+<option>Hành động</option>
+<option selected="">Tâm lý (Drama)</option>
+<option>Kinh dị</option>
+<option>Hài hước</option>
+</select>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider">Ngày khởi chiếu</label>
+<div class="relative">
+<span class="absolute left-3 top-2.5 material-symbols-outlined text-text-secondary text-[20px] pointer-events-none">calendar_month</span>
+<input class="bg-surface-highlight border-transparent focus:border-primary focus:ring-0 rounded-lg text-white text-sm font-medium h-10 w-full pl-10" type="date" value="2023-07-21"/>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider">Đạo diễn</label>
+<input class="bg-surface-highlight border-transparent focus:border-primary focus:ring-0 rounded-lg text-white text-sm placeholder-text-secondary/50 font-medium h-10 w-full" type="text" value="Christopher Nolan"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider">Mô tả</label>
+<textarea class="bg-surface-highlight border-transparent focus:border-primary focus:ring-0 rounded-lg text-white text-sm placeholder-text-secondary/50 resize-none font-normal leading-relaxed p-3" rows="4">Câu chuyện về nhà vật lý lý thuyết J. Robert Oppenheimer, người lãnh đạo Dự án Manhattan chế tạo bom nguyên tử.</textarea>
+</div>
+</div>
+<hr class="border-white/5 my-1"/>
+<!-- Status Toggle -->
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-highlight/30 border border-white/5">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Trạng thái phim</span>
+<span class="text-xs text-text-secondary">Sắp chiếu / Đang chiếu</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="p-5 border-t border-white/5 bg-surface-highlight/10 flex gap-3">
+<button class="flex-1 h-10 rounded-lg bg-surface-highlight hover:bg-white/10 text-white text-sm font-bold transition-colors">Hủy bỏ</button>
+<button class="flex-1 h-10 rounded-lg bg-primary hover:bg-blue-600 text-white text-sm font-bold shadow-lg shadow-primary/25 transition-all transform active:scale-95">Lưu thay đổi</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (Mobile) -->
+<button class="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-primary text-white shadow-xl shadow-primary/40 flex items-center justify-center md:hidden z-50">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+</body></html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quản lý lịch chiếu - Cinema Admin</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-dark": "#1e293b",
+                        "surface-darker": "#111722",
+                        "border-dark": "#232f48",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for the schedule area */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-white overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-border-dark bg-white dark:bg-surface-darker px-6 py-3 shrink-0 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-gray-900 dark:text-white">
+<div class="size-8 text-primary">
+<span class="material-symbols-outlined text-4xl">movie_filter</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Cinema Admin</h2>
+</div>
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full border border-gray-200 dark:border-border-dark">
+<div class="text-gray-400 dark:text-[#92a4c9] flex border-none bg-gray-50 dark:bg-surface-darker items-center justify-center pl-3 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg focus:outline-0 focus:ring-0 border-none bg-gray-50 dark:bg-surface-darker focus:border-none h-full placeholder:text-gray-400 dark:placeholder:text-[#92a4c9] px-3 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal text-gray-900 dark:text-white" placeholder="Tìm kiếm phim, suất chiếu..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Dashboard</a>
+<a class="text-primary dark:text-white text-sm font-medium leading-normal relative after:content-[''] after:absolute after:-bottom-[22px] after:left-0 after:w-full after:h-[2px] after:bg-primary" href="#">Lịch chiếu</a>
+<a class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Phim</a>
+<a class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Phòng vé</a>
+<a class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Báo cáo</a>
+</nav>
+<div class="flex items-center gap-3 pl-6 border-l border-gray-200 dark:border-border-dark">
+<button class="relative p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-surface-dark rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-surface-darker"></span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 ring-2 ring-gray-200 dark:ring-border-dark cursor-pointer" data-alt="Avatar user" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCvbWyiXL-j6mpMDmmMdvvFZQIPHusaW7ST1c8YMWNlpL0w9kIgvinGsjo4ZBSXoXcW1Udf0f_fq3fgq7J3wYG-Q1lK5M-X5BKEQQ4TcHto_EMugTClx3Uk50NKGZ6FmaI3wH2P7mtOB9iERav-tmZzq_bmSQXAcVEQN7PFqSERyllD-_y12X6AL6HT7-omAk5ZwfojRPsjbLYgNTw-8ykzYK2n3U1X_Rq6tN1mU0vk6pIlf7V25Q1UrAWrlxqBnxQWgHu-w7yV_m4");'></div>
+</div>
+</div>
+</header>
+<!-- Main Content Layout -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-[320px] shrink-0 border-r border-gray-200 dark:border-border-dark bg-white dark:bg-surface-darker flex flex-col overflow-y-auto custom-scrollbar z-10">
+<!-- Sidebar Header -->
+<div class="p-4 pb-0">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-base font-bold text-gray-900 dark:text-white">Bộ lọc tìm kiếm</h2>
+<button class="text-xs text-primary hover:text-blue-400 font-medium">Đặt lại</button>
+</div>
+</div>
+<!-- Mini Calendar -->
+<div class="px-4 pb-4 border-b border-gray-200 dark:border-border-dark">
+<div class="flex items-center justify-between mb-3 px-1">
+<button class="p-1 hover:bg-gray-100 dark:hover:bg-surface-dark rounded-full text-gray-500 dark:text-gray-400">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<p class="text-sm font-bold text-gray-900 dark:text-white">Tháng 10 2023</p>
+<button class="p-1 hover:bg-gray-100 dark:hover:bg-surface-dark rounded-full text-gray-500 dark:text-gray-400">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+<div class="grid grid-cols-7 gap-y-2 mb-2">
+<span class="text-center text-xs font-medium text-gray-400">T2</span>
+<span class="text-center text-xs font-medium text-gray-400">T3</span>
+<span class="text-center text-xs font-medium text-gray-400">T4</span>
+<span class="text-center text-xs font-medium text-gray-400">T5</span>
+<span class="text-center text-xs font-medium text-gray-400">T6</span>
+<span class="text-center text-xs font-medium text-gray-400">T7</span>
+<span class="text-center text-xs font-medium text-gray-400">CN</span>
+<!-- Calendar Days -->
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-400 hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">28</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-400 hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">29</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-400 hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">30</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">1</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">2</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">3</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">4</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-white bg-primary font-bold shadow-lg shadow-primary/30 mx-auto">5</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">6</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">7</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">8</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">9</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">10</button>
+<button class="size-8 flex items-center justify-center rounded-full text-xs text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-surface-dark mx-auto">11</button>
+</div>
+</div>
+<!-- Filters -->
+<div class="p-4 flex flex-col gap-4">
+<!-- Filter Group: Movies -->
+<details class="group" open="">
+<summary class="flex cursor-pointer items-center justify-between gap-2 py-2 text-sm font-bold text-gray-900 dark:text-white select-none">
+<span>Phim đang chiếu</span>
+<span class="material-symbols-outlined text-gray-400 transition-transform group-open:rotate-180 text-[20px]">expand_more</span>
+</summary>
+<div class="mt-2 flex flex-col gap-2 pl-2 border-l-2 border-gray-100 dark:border-surface-dark ml-1.5">
+<label class="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-surface-dark rounded cursor-pointer">
+<input checked="" class="rounded border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-primary/30 size-4" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-gray-900 dark:text-white truncate">Dune: Part Two</p>
+<p class="text-xs text-gray-500">2h 46m</p>
+</div>
+<div class="size-2 rounded-full bg-purple-500"></div>
+</label>
+<label class="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-surface-dark rounded cursor-pointer">
+<input checked="" class="rounded border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-primary/30 size-4" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-gray-900 dark:text-white truncate">Kung Fu Panda 4</p>
+<p class="text-xs text-gray-500">1h 34m</p>
+</div>
+<div class="size-2 rounded-full bg-orange-500"></div>
+</label>
+<label class="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-surface-dark rounded cursor-pointer">
+<input class="rounded border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-primary/30 size-4" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-gray-900 dark:text-white truncate">Godzilla x Kong</p>
+<p class="text-xs text-gray-500">1h 55m</p>
+</div>
+<div class="size-2 rounded-full bg-blue-500"></div>
+</label>
+</div>
+</details>
+<!-- Filter Group: Rooms -->
+<details class="group" open="">
+<summary class="flex cursor-pointer items-center justify-between gap-2 py-2 text-sm font-bold text-gray-900 dark:text-white select-none">
+<span>Phòng chiếu</span>
+<span class="material-symbols-outlined text-gray-400 transition-transform group-open:rotate-180 text-[20px]">expand_more</span>
+</summary>
+<div class="mt-2 flex flex-col gap-2 pl-2 border-l-2 border-gray-100 dark:border-surface-dark ml-1.5">
+<label class="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-surface-dark rounded cursor-pointer">
+<input checked="" class="rounded border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-primary/30 size-4" type="checkbox"/>
+<span class="text-sm text-gray-700 dark:text-gray-300">Tất cả</span>
+</label>
+<label class="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-surface-dark rounded cursor-pointer">
+<input checked="" class="rounded border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-primary/30 size-4" type="checkbox"/>
+<span class="text-sm text-gray-700 dark:text-gray-300">Phòng 01 (IMAX)</span>
+</label>
+<label class="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-surface-dark rounded cursor-pointer">
+<input checked="" class="rounded border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-primary/30 size-4" type="checkbox"/>
+<span class="text-sm text-gray-700 dark:text-gray-300">Phòng 02 (Standard)</span>
+</label>
+<label class="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-surface-dark rounded cursor-pointer">
+<input checked="" class="rounded border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-primary/30 size-4" type="checkbox"/>
+<span class="text-sm text-gray-700 dark:text-gray-300">Phòng 03 (VIP)</span>
+</label>
+</div>
+</details>
+</div>
+</aside>
+<!-- Main Schedule Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-gray-50 dark:bg-background-dark relative">
+<!-- Toolbar -->
+<div class="shrink-0 flex items-center justify-between p-4 border-b border-gray-200 dark:border-border-dark bg-white dark:bg-surface-darker">
+<div class="flex items-center gap-4">
+<div class="flex items-center bg-gray-100 dark:bg-surface-dark rounded-lg p-1">
+<button class="px-3 py-1.5 rounded-md text-sm font-medium bg-white dark:bg-primary text-gray-900 dark:text-white shadow-sm">Ngày</button>
+<button class="px-3 py-1.5 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Tuần</button>
+<button class="px-3 py-1.5 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Tháng</button>
+</div>
+<div class="h-6 w-px bg-gray-200 dark:bg-border-dark"></div>
+<div class="flex items-center gap-2">
+<h1 class="text-xl font-bold text-gray-900 dark:text-white">Thứ Năm, 5 Tháng 10</h1>
+<div class="flex gap-1 ml-2">
+<button class="size-8 flex items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-surface-dark text-gray-500 dark:text-gray-400">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="size-8 flex items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-surface-dark text-gray-500 dark:text-gray-400">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-darker text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined text-[18px]">file_download</span>
+                        Xuất Excel
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-sm font-medium text-white hover:bg-blue-600 transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                        Thêm suất chiếu
+                    </button>
+</div>
+</div>
+<!-- Calendar Grid -->
+<div class="flex-1 overflow-auto custom-scrollbar flex flex-col relative">
+<!-- Grid Header (Rooms) -->
+<div class="sticky top-0 z-10 flex border-b border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-surface-darker min-w-max">
+<div class="w-20 shrink-0 border-r border-gray-200 dark:border-border-dark bg-white dark:bg-surface-darker"></div> <!-- Time column spacer -->
+<div class="flex-1 grid grid-cols-4 divide-x divide-gray-200 dark:divide-border-dark min-w-[1000px]">
+<div class="px-4 py-3 text-center">
+<h3 class="text-sm font-bold text-gray-900 dark:text-white">Phòng 01 (IMAX)</h3>
+<p class="text-xs text-gray-500 dark:text-gray-400">350 ghế</p>
+</div>
+<div class="px-4 py-3 text-center">
+<h3 class="text-sm font-bold text-gray-900 dark:text-white">Phòng 02</h3>
+<p class="text-xs text-gray-500 dark:text-gray-400">120 ghế</p>
+</div>
+<div class="px-4 py-3 text-center">
+<h3 class="text-sm font-bold text-gray-900 dark:text-white">Phòng 03 (VIP)</h3>
+<p class="text-xs text-gray-500 dark:text-gray-400">45 ghế</p>
+</div>
+<div class="px-4 py-3 text-center bg-gray-50 dark:bg-surface-dark/50">
+<h3 class="text-sm font-bold text-gray-500 dark:text-gray-400">Phòng 04</h3>
+<p class="text-xs text-gray-400 dark:text-gray-500">Đang bảo trì</p>
+</div>
+</div>
+</div>
+<!-- Grid Body -->
+<div class="flex min-w-max flex-1 relative">
+<!-- Time Column -->
+<div class="w-20 shrink-0 bg-white dark:bg-surface-darker border-r border-gray-200 dark:border-border-dark flex flex-col text-xs text-gray-500 dark:text-gray-400 font-medium select-none">
+<!-- Each hour block is h-32 (128px) for comfortable spacing -->
+<div class="h-32 border-b border-dashed border-gray-100 dark:border-border-dark/50 pr-2 pt-1 text-right relative">08:00</div>
+<div class="h-32 border-b border-dashed border-gray-100 dark:border-border-dark/50 pr-2 pt-1 text-right relative">09:00</div>
+<div class="h-32 border-b border-dashed border-gray-100 dark:border-border-dark/50 pr-2 pt-1 text-right relative">10:00</div>
+<div class="h-32 border-b border-dashed border-gray-100 dark:border-border-dark/50 pr-2 pt-1 text-right relative">11:00</div>
+<div class="h-32 border-b border-dashed border-gray-100 dark:border-border-dark/50 pr-2 pt-1 text-right relative">12:00</div>
+<div class="h-32 border-b border-dashed border-gray-100 dark:border-border-dark/50 pr-2 pt-1 text-right relative">13:00</div>
+<div class="h-32 border-b border-dashed border-gray-100 dark:border-border-dark/50 pr-2 pt-1 text-right relative">14:00</div>
+<div class="h-32 border-b border-dashed border-gray-100 dark:border-border-dark/50 pr-2 pt-1 text-right relative">15:00</div>
+<div class="h-32 border-b border-dashed border-gray-100 dark:border-border-dark/50 pr-2 pt-1 text-right relative">16:00</div>
+<div class="h-32 border-b border-dashed border-gray-100 dark:border-border-dark/50 pr-2 pt-1 text-right relative">17:00</div>
+<div class="h-32 border-b border-dashed border-gray-100 dark:border-border-dark/50 pr-2 pt-1 text-right relative">18:00</div>
+</div>
+<!-- Room Columns Container -->
+<div class="flex-1 grid grid-cols-4 divide-x divide-gray-200 dark:divide-border-dark min-w-[1000px] relative bg-white dark:bg-surface-darker/50">
+<!-- Background Grid Lines -->
+<div class="absolute inset-0 flex flex-col pointer-events-none z-0">
+<div class="h-32 border-b border-gray-100 dark:border-border-dark/30"></div>
+<div class="h-32 border-b border-gray-100 dark:border-border-dark/30"></div>
+<div class="h-32 border-b border-gray-100 dark:border-border-dark/30"></div>
+<div class="h-32 border-b border-gray-100 dark:border-border-dark/30"></div>
+<div class="h-32 border-b border-gray-100 dark:border-border-dark/30"></div>
+<div class="h-32 border-b border-gray-100 dark:border-border-dark/30"></div>
+<div class="h-32 border-b border-gray-100 dark:border-border-dark/30"></div>
+<div class="h-32 border-b border-gray-100 dark:border-border-dark/30"></div>
+<div class="h-32 border-b border-gray-100 dark:border-border-dark/30"></div>
+<div class="h-32 border-b border-gray-100 dark:border-border-dark/30"></div>
+<div class="h-32 border-b border-gray-100 dark:border-border-dark/30"></div>
+</div>
+<!-- Current Time Indicator Line (example) -->
+<div class="absolute left-0 right-0 top-[340px] border-t-2 border-red-500 z-20 pointer-events-none flex items-center">
+<div class="absolute -left-[5px] size-2.5 bg-red-500 rounded-full"></div>
+</div>
+<!-- Room 1 Events -->
+<div class="relative h-full">
+<!-- Event Card: Dune -->
+<!-- Top calculation: 9:00 is 128px from top. Starts at 9:30 => 128 + 64 = 192px -->
+<!-- Height: 2h46m ~ approx 2.75h * 128px = 352px -->
+<div class="absolute top-[192px] left-2 right-2 h-[352px] rounded-lg bg-purple-500/10 border-l-4 border-purple-500 p-3 hover:shadow-lg transition-shadow cursor-pointer group z-10 flex flex-col justify-between overflow-hidden">
+<div>
+<div class="flex justify-between items-start mb-1">
+<p class="text-xs font-bold text-purple-400">09:30 - 12:16</p>
+<span class="material-symbols-outlined text-[16px] text-purple-400 opacity-0 group-hover:opacity-100">drag_indicator</span>
+</div>
+<h4 class="font-bold text-gray-900 dark:text-white leading-tight mb-1">Dune: Part Two</h4>
+<p class="text-xs text-gray-500 dark:text-gray-400">Phụ đề Tiếng Việt</p>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<div class="flex-1 h-1.5 bg-gray-200 dark:bg-surface-darker rounded-full overflow-hidden">
+<div class="h-full bg-purple-500 w-[65%]"></div>
+</div>
+<span class="text-[10px] font-bold text-gray-600 dark:text-gray-300">228/350</span>
+</div>
+</div>
+<!-- Event Card: Godzilla x Kong -->
+<div class="absolute top-[560px] left-2 right-2 h-[245px] rounded-lg bg-blue-500/10 border-l-4 border-blue-500 p-3 hover:shadow-lg transition-shadow cursor-pointer group z-10 flex flex-col justify-between overflow-hidden">
+<div>
+<div class="flex justify-between items-start mb-1">
+<p class="text-xs font-bold text-blue-400">13:30 - 15:25</p>
+</div>
+<h4 class="font-bold text-gray-900 dark:text-white leading-tight mb-1">Godzilla x Kong: The New Empire</h4>
+<p class="text-xs text-gray-500 dark:text-gray-400">Lồng tiếng</p>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<div class="flex-1 h-1.5 bg-gray-200 dark:bg-surface-darker rounded-full overflow-hidden">
+<div class="h-full bg-blue-500 w-[15%]"></div>
+</div>
+<span class="text-[10px] font-bold text-gray-600 dark:text-gray-300">45/350</span>
+</div>
+</div>
+</div>
+<!-- Room 2 Events -->
+<div class="relative h-full">
+<!-- Event Card: Kung Fu Panda 4 -->
+<!-- 10:00 start -->
+<div class="absolute top-[256px] left-2 right-2 h-[200px] rounded-lg bg-orange-500/10 border-l-4 border-orange-500 p-3 hover:shadow-lg transition-shadow cursor-pointer group z-10 flex flex-col justify-between overflow-hidden">
+<div>
+<div class="flex justify-between items-start mb-1">
+<p class="text-xs font-bold text-orange-400">10:00 - 11:34</p>
+</div>
+<h4 class="font-bold text-gray-900 dark:text-white leading-tight mb-1">Kung Fu Panda 4</h4>
+<p class="text-xs text-gray-500 dark:text-gray-400">Lồng tiếng</p>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<div class="flex-1 h-1.5 bg-gray-200 dark:bg-surface-darker rounded-full overflow-hidden">
+<div class="h-full bg-orange-500 w-[88%]"></div>
+</div>
+<span class="text-[10px] font-bold text-gray-600 dark:text-gray-300">105/120</span>
+</div>
+</div>
+<!-- Gap/Cleaning time visual suggestion -->
+<div class="absolute top-[456px] left-2 right-2 h-[30px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="text-[10px] text-gray-400 bg-gray-100 dark:bg-surface-dark px-2 rounded-full border border-gray-200 dark:border-border-dark">Dọn dẹp 30p</span>
+</div>
+<!-- Next show -->
+<div class="absolute top-[512px] left-2 right-2 h-[200px] rounded-lg bg-orange-500/10 border-l-4 border-orange-500 p-3 hover:shadow-lg transition-shadow cursor-pointer group z-10 flex flex-col justify-between overflow-hidden">
+<div>
+<div class="flex justify-between items-start mb-1">
+<p class="text-xs font-bold text-orange-400">12:00 - 13:34</p>
+</div>
+<h4 class="font-bold text-gray-900 dark:text-white leading-tight mb-1">Kung Fu Panda 4</h4>
+<p class="text-xs text-gray-500 dark:text-gray-400">Phụ đề</p>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<div class="flex-1 h-1.5 bg-gray-200 dark:bg-surface-darker rounded-full overflow-hidden">
+<div class="h-full bg-orange-500 w-[30%]"></div>
+</div>
+<span class="text-[10px] font-bold text-gray-600 dark:text-gray-300">36/120</span>
+</div>
+</div>
+</div>
+<!-- Room 3 Events -->
+<div class="relative h-full">
+<!-- Empty slot indicator on hover -->
+<div class="absolute top-[300px] left-2 right-2 h-[150px] border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center opacity-0 hover:opacity-100 cursor-pointer bg-white/5 dark:bg-white/5 z-0 transition-opacity">
+<span class="flex items-center gap-1 text-sm text-gray-500 font-medium">
+<span class="material-symbols-outlined text-[18px]">add</span> Thêm
+                                </span>
+</div>
+<!-- Evening show -->
+<div class="absolute top-[700px] left-2 right-2 h-[352px] rounded-lg bg-purple-500/10 border-l-4 border-purple-500 p-3 hover:shadow-lg transition-shadow cursor-pointer group z-10 flex flex-col justify-between overflow-hidden opacity-60 grayscale hover:grayscale-0 hover:opacity-100">
+<div>
+<div class="flex justify-between items-start mb-1">
+<p class="text-xs font-bold text-purple-400">16:30 - 19:16</p>
+<span class="bg-gray-800 text-white text-[10px] px-1.5 rounded">Sắp chiếu</span>
+</div>
+<h4 class="font-bold text-gray-900 dark:text-white leading-tight mb-1">Dune: Part Two</h4>
+<p class="text-xs text-gray-500 dark:text-gray-400">VIP Premium</p>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<div class="flex-1 h-1.5 bg-gray-200 dark:bg-surface-darker rounded-full overflow-hidden">
+<div class="h-full bg-purple-500 w-[0%]"></div>
+</div>
+<span class="text-[10px] font-bold text-gray-600 dark:text-gray-300">0/45</span>
+</div>
+</div>
+</div>
+<!-- Room 4 (Maintenance) -->
+<div class="relative h-full bg-stripes">
+<!-- Using a repeating linear gradient for "maintenance" look via custom css or inline style -->
+<div class="absolute inset-0 opacity-5" style="background-image: repeating-linear-gradient(45deg, #000 0, #000 10px, transparent 0, transparent 20px);"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="bg-white dark:bg-surface-darker p-3 rounded-lg shadow-sm border border-gray-200 dark:border-border-dark text-center">
+<span class="material-symbols-outlined text-gray-400 text-3xl mb-1">engineering</span>
+<p class="text-sm font-bold text-gray-500">Bảo trì</p>
+<p class="text-xs text-gray-400">Đến 18:00</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Floating Action Button (Mobile) -->
+<button class="md:hidden fixed bottom-6 right-6 size-14 bg-primary text-white rounded-full shadow-xl flex items-center justify-center hover:bg-blue-600 transition-colors z-50">
+<span class="material-symbols-outlined text-2xl">add</span>
+</button>
+</body></html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cinema POS - Quản lý Bán vé</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-dark": "#1b2434",
+                        "surface-darker": "#161e2d",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for better aesthetics in dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #101622; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232f48; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #34425e; 
+        }
+        
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 0.75rem;
+        }
+        
+        /* Screen curve effect */
+        .screen-curve {
+            box-shadow: 0 20px 50px -10px rgba(255, 255, 255, 0.1);
+            transform: perspective(400px) rotateX(-5deg) scale(0.9);
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white h-screen flex flex-col overflow-hidden">
+<!-- Top Navigation -->
+<header class="flex-none flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#232f48] bg-white dark:bg-[#111722] px-6 py-3 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-8 rounded bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">theaters</span>
+</div>
+<div>
+<h2 class="text-lg font-bold leading-tight">POS Bán Vé</h2>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-normal">Rạp 01 - Cinema A</p>
+</div>
+</div>
+<!-- Quick Movie Search -->
+<label class="flex flex-col min-w-40 !h-10 w-96">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full border border-slate-200 dark:border-none">
+<div class="text-slate-400 dark:text-[#92a4c9] flex dark:bg-[#232f48] bg-slate-50 items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg rounded-l-none text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-slate-50 dark:bg-[#232f48] h-full placeholder:text-slate-400 dark:placeholder:text-[#92a4c9] px-4 pl-2 text-sm" placeholder="Tìm phim, suất chiếu..."/>
+</div>
+</label>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<span class="text-sm font-bold">Nguyễn Văn A</span>
+<span class="text-xs text-emerald-500 flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Online
+                </span>
+</div>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border-2 border-slate-200 dark:border-[#232f48]" data-alt="Staff profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAfZo1I3KIBfEjEr-Fvdqn5v0LlJVqUD2ac7B88WdamzlbMY-tfhSwC17iLnBvgCczS59RZA6poDlWPOonQ0ynDaQsROEaOpvEb2Fk_2bBEv1wEyVK9oclFlJJILwMgabmv_xa8fzXWLeFVUGAYScc4PpVfcVsCfp8mqrXMqHpHd5yf1HrCQTmvC53wgXc2s9OFEzCJT_pNUss0ItgXvEkrFEFpZ35Bkwmqi7bUCSzC0a_rF26b1BlHeMXgP20dh1QNfnvMUhtFgB8");'></div>
+</div>
+</header>
+<!-- Main Content Area -->
+<div class="flex flex-1 overflow-hidden">
+<!-- LEFT COLUMN: Movie, Time & Seat Selection -->
+<main class="flex-1 flex flex-col h-full overflow-y-auto relative bg-slate-100 dark:bg-[#101622] p-6">
+<!-- Breadcrumbs -->
+<div class="flex flex-wrap gap-2 mb-4 text-sm">
+<a class="text-slate-500 dark:text-[#92a4c9] hover:text-primary transition-colors" href="#">Trang chủ</a>
+<span class="text-slate-400 dark:text-[#92a4c9]">/</span>
+<a class="text-slate-500 dark:text-[#92a4c9] hover:text-primary transition-colors" href="#">Lịch chiếu</a>
+<span class="text-slate-400 dark:text-[#92a4c9]">/</span>
+<span class="text-slate-900 dark:text-white font-medium">Chọn ghế</span>
+</div>
+<!-- Movie Header -->
+<div class="flex justify-between items-start mb-6">
+<div>
+<h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">Spider-Man: Across the Spider-Verse</h1>
+<div class="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+<span class="bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white px-2 py-0.5 rounded text-xs font-bold">P</span>
+<span>Hoạt hình / Hành động</span>
+<span>•</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span> 140 phút</span>
+<span>•</span>
+<span>2D Phụ đề</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex gap-4 items-center bg-white dark:bg-[#1b2434] p-3 rounded-lg border border-slate-200 dark:border-slate-700/50 shadow-sm">
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded bg-slate-300 dark:bg-[#323d53]"></div>
+<span class="text-xs text-slate-600 dark:text-slate-300">Trống</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded bg-primary border border-primary"></div>
+<span class="text-xs text-slate-600 dark:text-slate-300">Đang chọn</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded bg-red-900/30 border border-red-800/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-xs text-red-500">close</span>
+</div>
+<span class="text-xs text-slate-600 dark:text-slate-300">Đã bán</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded border-2 border-yellow-500 bg-[#323d53]"></div>
+<span class="text-xs text-slate-600 dark:text-slate-300">VIP</span>
+</div>
+</div>
+</div>
+<!-- Showtime Selector (Chips) -->
+<div class="mb-8">
+<h3 class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">Suất chiếu hôm nay</h3>
+<div class="flex gap-3 flex-wrap">
+<button class="group flex h-9 items-center gap-2 rounded-lg bg-white dark:bg-[#232f48] border border-slate-200 dark:border-transparent px-3 hover:bg-slate-50 dark:hover:bg-[#2d3b55] transition-colors">
+<span class="text-slate-600 dark:text-slate-300 text-sm font-medium">18:00</span>
+<span class="text-xs text-slate-400">105/120</span>
+</button>
+<button class="group flex h-9 items-center gap-2 rounded-lg bg-white dark:bg-[#232f48] border border-slate-200 dark:border-transparent px-3 hover:bg-slate-50 dark:hover:bg-[#2d3b55] transition-colors">
+<span class="text-slate-600 dark:text-slate-300 text-sm font-medium">19:15</span>
+<span class="text-xs text-slate-400">80/120</span>
+</button>
+<button class="group flex h-9 items-center gap-2 rounded-lg bg-primary/10 border border-primary px-3 cursor-default ring-2 ring-primary/20">
+<span class="text-primary dark:text-white text-sm font-bold">20:30</span>
+<span class="text-xs text-primary/70 dark:text-white/70 font-medium">Đang chọn</span>
+</button>
+<button class="group flex h-9 items-center gap-2 rounded-lg bg-white dark:bg-[#232f48] border border-slate-200 dark:border-transparent px-3 hover:bg-slate-50 dark:hover:bg-[#2d3b55] transition-colors">
+<span class="text-slate-600 dark:text-slate-300 text-sm font-medium">21:45</span>
+<span class="text-xs text-slate-400">120/120</span>
+</button>
+</div>
+</div>
+<!-- SEAT MAP CONTAINER -->
+<div class="flex-1 bg-white dark:bg-[#1b2434] rounded-xl shadow-sm border border-slate-200 dark:border-slate-700/50 p-8 flex flex-col items-center justify-center relative min-h-[500px]">
+<!-- Screen Visual -->
+<div class="w-full max-w-3xl mb-12 flex flex-col items-center">
+<div class="h-1.5 w-full bg-slate-300 dark:bg-slate-600 rounded-full mb-1 screen-curve"></div>
+<div class="h-16 w-3/4 bg-gradient-to-b from-slate-200/50 to-transparent dark:from-white/5 dark:to-transparent blur-xl -mt-2"></div>
+<span class="text-xs uppercase tracking-[0.2em] text-slate-400 font-medium -mt-8">Màn hình</span>
+</div>
+<!-- Seats Grid -->
+<div class="w-full max-w-2xl mx-auto">
+<!-- Row A -->
+<div class="flex justify-center gap-3 mb-3">
+<span class="w-6 flex items-center justify-center text-slate-400 font-bold text-xs">A</span>
+<div class="flex gap-2">
+<!-- Seat Item: Sold -->
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 flex items-center justify-center cursor-not-allowed" disabled="">
+<span class="text-[10px] font-bold text-red-300">1</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 flex items-center justify-center cursor-not-allowed" disabled="">
+<span class="text-[10px] font-bold text-red-300">2</span>
+</button>
+<!-- Seat Item: Available -->
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">3</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">4</span>
+</button>
+<!-- Aisle Gap -->
+<div class="w-8"></div>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">5</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">6</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">7</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">8</span>
+</button>
+</div>
+<span class="w-6 flex items-center justify-center text-slate-400 font-bold text-xs">A</span>
+</div>
+<!-- Row B -->
+<div class="flex justify-center gap-3 mb-3">
+<span class="w-6 flex items-center justify-center text-slate-400 font-bold text-xs">B</span>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">1</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">2</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">3</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">4</span>
+</button>
+<!-- Aisle Gap -->
+<div class="w-8"></div>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">5</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">6</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">7</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] hover:bg-slate-300 dark:hover:bg-[#45526e] transition-colors flex items-center justify-center group">
+<span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white">8</span>
+</button>
+</div>
+<span class="w-6 flex items-center justify-center text-slate-400 font-bold text-xs">B</span>
+</div>
+<!-- Row C (VIP) -->
+<div class="flex justify-center gap-3 mb-3">
+<span class="w-6 flex items-center justify-center text-slate-400 font-bold text-xs">C</span>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] border border-yellow-500/50 hover:bg-yellow-50 dark:hover:bg-[#3d4b65] transition-colors flex items-center justify-center group shadow-[0_0_10px_rgba(234,179,8,0.1)]">
+<span class="text-[10px] font-medium text-yellow-600 dark:text-yellow-500 group-hover:text-yellow-700 dark:group-hover:text-yellow-400">1</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] border border-yellow-500/50 hover:bg-yellow-50 dark:hover:bg-[#3d4b65] transition-colors flex items-center justify-center group shadow-[0_0_10px_rgba(234,179,8,0.1)]">
+<span class="text-[10px] font-medium text-yellow-600 dark:text-yellow-500 group-hover:text-yellow-700 dark:group-hover:text-yellow-400">2</span>
+</button>
+<!-- SELECTED SEATS -->
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-primary text-white border border-primary shadow-lg shadow-primary/40 flex items-center justify-center transform scale-110">
+<span class="text-[10px] font-bold">3</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-primary text-white border border-primary shadow-lg shadow-primary/40 flex items-center justify-center transform scale-110">
+<span class="text-[10px] font-bold">4</span>
+</button>
+<!-- Aisle Gap -->
+<div class="w-8"></div>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] border border-yellow-500/50 hover:bg-yellow-50 dark:hover:bg-[#3d4b65] transition-colors flex items-center justify-center group shadow-[0_0_10px_rgba(234,179,8,0.1)]">
+<span class="text-[10px] font-medium text-yellow-600 dark:text-yellow-500 group-hover:text-yellow-700 dark:group-hover:text-yellow-400">5</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] border border-yellow-500/50 hover:bg-yellow-50 dark:hover:bg-[#3d4b65] transition-colors flex items-center justify-center group shadow-[0_0_10px_rgba(234,179,8,0.1)]">
+<span class="text-[10px] font-medium text-yellow-600 dark:text-yellow-500 group-hover:text-yellow-700 dark:group-hover:text-yellow-400">6</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] border border-yellow-500/50 hover:bg-yellow-50 dark:hover:bg-[#3d4b65] transition-colors flex items-center justify-center group shadow-[0_0_10px_rgba(234,179,8,0.1)]">
+<span class="text-[10px] font-medium text-yellow-600 dark:text-yellow-500 group-hover:text-yellow-700 dark:group-hover:text-yellow-400">7</span>
+</button>
+<button class="w-8 h-8 rounded-t-lg rounded-b-md bg-slate-200 dark:bg-[#323d53] border border-yellow-500/50 hover:bg-yellow-50 dark:hover:bg-[#3d4b65] transition-colors flex items-center justify-center group shadow-[0_0_10px_rgba(234,179,8,0.1)]">
+<span class="text-[10px] font-medium text-yellow-600 dark:text-yellow-500 group-hover:text-yellow-700 dark:group-hover:text-yellow-400">8</span>
+</button>
+</div>
+<span class="w-6 flex items-center justify-center text-slate-400 font-bold text-xs">C</span>
+</div>
+<!-- Row D (Couple) -->
+<div class="flex justify-center gap-3 mt-12">
+<span class="w-6 flex items-center justify-center text-slate-400 font-bold text-xs">D</span>
+<div class="flex gap-4">
+<button class="w-20 h-8 rounded-t-lg rounded-b-md bg-pink-100 dark:bg-[#323d53] border border-pink-300 dark:border-pink-500/30 hover:bg-pink-200 dark:hover:bg-pink-900/20 transition-colors flex items-center justify-center group gap-2">
+<span class="material-symbols-outlined text-xs text-pink-500">favorite</span>
+<span class="text-[10px] font-medium text-pink-600 dark:text-pink-400">1-2</span>
+</button>
+<button class="w-20 h-8 rounded-t-lg rounded-b-md bg-pink-100 dark:bg-[#323d53] border border-pink-300 dark:border-pink-500/30 hover:bg-pink-200 dark:hover:bg-pink-900/20 transition-colors flex items-center justify-center group gap-2">
+<span class="material-symbols-outlined text-xs text-pink-500">favorite</span>
+<span class="text-[10px] font-medium text-pink-600 dark:text-pink-400">3-4</span>
+</button>
+<button class="w-20 h-8 rounded-t-lg rounded-b-md bg-pink-100 dark:bg-[#323d53] border border-pink-300 dark:border-pink-500/30 hover:bg-pink-200 dark:hover:bg-pink-900/20 transition-colors flex items-center justify-center group gap-2">
+<span class="material-symbols-outlined text-xs text-pink-500">favorite</span>
+<span class="text-[10px] font-medium text-pink-600 dark:text-pink-400">5-6</span>
+</button>
+</div>
+<span class="w-6 flex items-center justify-center text-slate-400 font-bold text-xs">D</span>
+</div>
+</div>
+</div>
+<div class="mt-4 text-center text-slate-400 text-xs">
+                 Giữ Ctrl để chọn nhiều ghế • Nhấn Space để đặt nhanh
+            </div>
+</main>
+<!-- RIGHT COLUMN: Sidebar / Checkout -->
+<aside class="w-[420px] bg-white dark:bg-[#161e2d] border-l border-slate-200 dark:border-[#232f48] flex flex-col z-10 shadow-xl">
+<!-- Customer Section -->
+<div class="p-5 border-b border-slate-200 dark:border-[#232f48]">
+<h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Khách hàng</h3>
+<div class="flex gap-2">
+<div class="relative flex-1">
+<input class="w-full bg-slate-50 dark:bg-[#232f48] border-none rounded-lg py-2.5 px-3 pl-10 text-sm focus:ring-1 focus:ring-primary text-slate-900 dark:text-white placeholder:text-slate-400" placeholder="Tìm SĐT / Mã thành viên" type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-lg">person_search</span>
+</div>
+<button class="bg-primary/10 hover:bg-primary/20 text-primary p-2.5 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">add</span>
+</button>
+</div>
+<!-- Customer Info (Hidden by default or shown when selected) -->
+<div class="mt-3 flex items-center gap-3 bg-slate-50 dark:bg-[#232f48] p-2 rounded-lg border border-slate-100 dark:border-slate-700/50">
+<div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold">TV</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-slate-900 dark:text-white truncate">Trần Văn Khách</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Gold Member • 0901234567</p>
+</div>
+<button class="text-slate-400 hover:text-red-500"><span class="material-symbols-outlined text-sm">close</span></button>
+</div>
+</div>
+<!-- Cart Items (Scrollable) -->
+<div class="flex-1 overflow-y-auto p-5">
+<!-- Movie Item -->
+<div class="flex gap-3 mb-6">
+<div class="w-16 h-24 rounded-lg bg-center bg-cover shrink-0 shadow-md" data-alt="Poster for Spider-Man movie" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCX5389fUHF8SBNWddjxuRPdUkcV0IGTLNVcMBmj4LHiSksNEDIjSahb5am2RazlwTVR_PHgjMxKHbgFzxHvSaKtqQZN3dghtmQwsaaErT3RoY2gyzLThrqnxV14d3YdMVQnlTf1hSIz0hKiGxH_nNGUJd-fg5aE5OoWmELwVxQzpOozM1kvbcIfAHYi5vSYpgBe2SOgnyojgEm_1CBSoDBYUf2pWKSC0yLASqVrCLMvLqfsThV2eSsE3cFV9ZZxLx_mqW00vK7mX0');"></div>
+<div class="flex-1">
+<h4 class="font-bold text-slate-900 dark:text-white text-sm leading-snug mb-1">Spider-Man: Across the Spider-Verse</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">2D Phụ đề • C18</p>
+<p class="text-xs text-primary font-medium">18:00 - Hôm nay</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Phòng 05</p>
+</div>
+</div>
+<!-- Seats Table -->
+<div class="mb-6">
+<h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex justify-between">
+<span>Ghế đã chọn</span>
+<span class="text-primary cursor-pointer hover:underline">Xóa tất cả</span>
+</h3>
+<div class="space-y-2">
+<!-- Seat Item 1 -->
+<div class="flex items-center justify-between bg-slate-50 dark:bg-[#232f48] p-2 rounded-lg border border-slate-100 dark:border-slate-700/30">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#232f48] dark:bg-[#1b2434] border border-yellow-500/50 flex items-center justify-center text-xs font-bold text-yellow-500">C3</div>
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Ghế VIP</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Hàng C</p>
+</div>
+</div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">110.000 đ</p>
+</div>
+<!-- Seat Item 2 -->
+<div class="flex items-center justify-between bg-slate-50 dark:bg-[#232f48] p-2 rounded-lg border border-slate-100 dark:border-slate-700/30">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#232f48] dark:bg-[#1b2434] border border-yellow-500/50 flex items-center justify-center text-xs font-bold text-yellow-500">C4</div>
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Ghế VIP</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Hàng C</p>
+</div>
+</div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">110.000 đ</p>
+</div>
+</div>
+</div>
+<!-- Combo Addons -->
+<div class="mb-4">
+<h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Bắp nước &amp; Combo</h3>
+<div class="space-y-2">
+<!-- Combo Item -->
+<div class="flex items-center justify-between py-2 border-b border-dashed border-slate-200 dark:border-slate-700">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center text-orange-500">
+<span class="material-symbols-outlined">lunch_dining</span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Combo Solo</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">1 Bắp + 1 Nước</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="size-6 rounded bg-slate-200 dark:bg-[#232f48] flex items-center justify-center hover:bg-slate-300 dark:hover:bg-[#34425e] text-slate-600 dark:text-white">-</button>
+<span class="text-sm font-bold w-4 text-center">1</span>
+<button class="size-6 rounded bg-primary text-white flex items-center justify-center hover:bg-primary/90">+</button>
+</div>
+</div>
+<!-- Combo Item 2 -->
+<div class="flex items-center justify-between py-2 border-b border-dashed border-slate-200 dark:border-slate-700">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-500">
+<span class="material-symbols-outlined">local_drink</span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Pepsi Lớn</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">32oz</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="size-6 rounded bg-slate-200 dark:bg-[#232f48] flex items-center justify-center hover:bg-slate-300 dark:hover:bg-[#34425e] text-slate-600 dark:text-white">-</button>
+<span class="text-sm font-bold w-4 text-center">0</span>
+<button class="size-6 rounded bg-slate-200 dark:bg-[#232f48] text-slate-600 dark:text-white flex items-center justify-center hover:bg-slate-300 dark:hover:bg-[#34425e]">+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer / Totals -->
+<div class="p-5 bg-slate-50 dark:bg-[#1b2434] border-t border-slate-200 dark:border-[#232f48]">
+<!-- Payment Methods -->
+<div class="grid grid-cols-3 gap-2 mb-4">
+<button class="flex flex-col items-center justify-center p-2 rounded border border-primary bg-primary/10 text-primary">
+<span class="material-symbols-outlined mb-1">payments</span>
+<span class="text-[10px] font-bold">Tiền mặt</span>
+</button>
+<button class="flex flex-col items-center justify-center p-2 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#232f48] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#2d3b55]">
+<span class="material-symbols-outlined mb-1">credit_card</span>
+<span class="text-[10px] font-bold">Thẻ</span>
+</button>
+<button class="flex flex-col items-center justify-center p-2 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#232f48] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#2d3b55]">
+<span class="material-symbols-outlined mb-1">qr_code_scanner</span>
+<span class="text-[10px] font-bold">QR/Momo</span>
+</button>
+</div>
+<div class="space-y-2 mb-4">
+<div class="flex justify-between text-sm text-slate-500 dark:text-slate-400">
+<span>Tạm tính</span>
+<span>220.000 đ</span>
+</div>
+<div class="flex justify-between text-sm text-slate-500 dark:text-slate-400">
+<span>Combo</span>
+<span>80.000 đ</span>
+</div>
+<div class="flex justify-between text-sm text-emerald-500">
+<span>Giảm giá (TV)</span>
+<span>-15.000 đ</span>
+</div>
+<div class="border-t border-slate-200 dark:border-slate-700 my-2"></div>
+<div class="flex justify-between items-end">
+<span class="text-sm font-bold text-slate-900 dark:text-white">Tổng cộng</span>
+<span class="text-2xl font-bold text-primary">285.000 đ</span>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined">print</span>
+                    THANH TOÁN &amp; IN VÉ
+                </button>
+</div>
+</aside>
+</div>
+</body></html>

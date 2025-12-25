@@ -175,7 +175,7 @@
             this.lblHotMoviesTitle.ForeColor = System.Drawing.Color.White;
             this.lblHotMoviesTitle.Location = new System.Drawing.Point(20, 20);
             this.lblHotMoviesTitle.Name = "lblHotMoviesTitle";
-            this.lblHotMoviesTitle.Size = new System.Drawing.Size(150, 21);
+            this.lblHotMoviesTitle.Size = new System.Drawing.Size(186, 28);
             this.lblHotMoviesTitle.TabIndex = 0;
             this.lblHotMoviesTitle.Text = "Phim đang hot 🔥";
             // 
@@ -248,7 +248,7 @@
             this.lblDescription.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(165)))), ((int)(((byte)(177)))));
             this.lblDescription.Location = new System.Drawing.Point(45, 120);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(433, 23);
+            this.lblDescription.Size = new System.Drawing.Size(444, 23);
             this.lblDescription.TabIndex = 1;
             this.lblDescription.Text = "Đây là tình hình hoạt động của rạp chiếu phim hôm nay.";
             // 
@@ -259,7 +259,7 @@
             this.lblGreeting.ForeColor = System.Drawing.Color.White;
             this.lblGreeting.Location = new System.Drawing.Point(40, 40);
             this.lblGreeting.Name = "lblGreeting";
-            this.lblGreeting.Size = new System.Drawing.Size(460, 59);
+            this.lblGreeting.Size = new System.Drawing.Size(581, 72);
             this.lblGreeting.TabIndex = 0;
             this.lblGreeting.Text = "Xin chào, Quản lý! 👋";
             // 
@@ -299,6 +299,7 @@
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnExit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(82)))), ((int)(((byte)(82)))));
+            this.btnExit.GlowColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(30)))), ((int)(((byte)(107)))), ((int)(((byte)(254)))));
             this.btnExit.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(35)))), ((int)(((byte)(45)))));
             this.btnExit.Location = new System.Drawing.Point(10, 720);
             this.btnExit.Name = "btnExit";
@@ -323,6 +324,7 @@
             this.btnTickets.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTickets.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnTickets.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(165)))), ((int)(((byte)(177)))));
+            this.btnTickets.GlowColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(30)))), ((int)(((byte)(107)))), ((int)(((byte)(254)))));
             this.btnTickets.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(35)))), ((int)(((byte)(45)))));
             this.btnTickets.Location = new System.Drawing.Point(10, 320);
             this.btnTickets.Name = "btnTickets";
@@ -331,6 +333,7 @@
             this.btnTickets.Text = "   Vé đã bán";
             this.btnTickets.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnTickets.UseVisualStyleBackColor = false;
+            this.btnTickets.Click += new System.EventHandler(this.btnTickets_Click);
             // 
             // btnRevenue
             // 
@@ -346,6 +349,7 @@
             this.btnRevenue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRevenue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnRevenue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(165)))), ((int)(((byte)(177)))));
+            this.btnRevenue.GlowColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(30)))), ((int)(((byte)(107)))), ((int)(((byte)(254)))));
             this.btnRevenue.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(35)))), ((int)(((byte)(45)))));
             this.btnRevenue.Location = new System.Drawing.Point(10, 265);
             this.btnRevenue.Name = "btnRevenue";
@@ -369,6 +373,7 @@
             this.btnMovies.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMovies.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnMovies.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(165)))), ((int)(((byte)(177)))));
+            this.btnMovies.GlowColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(30)))), ((int)(((byte)(107)))), ((int)(((byte)(254)))));
             this.btnMovies.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(35)))), ((int)(((byte)(45)))));
             this.btnMovies.Location = new System.Drawing.Point(10, 210);
             this.btnMovies.Name = "btnMovies";
@@ -377,6 +382,7 @@
             this.btnMovies.Text = "   Phim";
             this.btnMovies.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnMovies.UseVisualStyleBackColor = false;
+            this.btnMovies.Click += new System.EventHandler(this.btnMovies_Click);
             // 
             // btnSchedule
             // 
@@ -392,6 +398,7 @@
             this.btnSchedule.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSchedule.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSchedule.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(165)))), ((int)(((byte)(177)))));
+            this.btnSchedule.GlowColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(30)))), ((int)(((byte)(107)))), ((int)(((byte)(254)))));
             this.btnSchedule.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(35)))), ((int)(((byte)(45)))));
             this.btnSchedule.Location = new System.Drawing.Point(10, 155);
             this.btnSchedule.Name = "btnSchedule";
@@ -416,6 +423,7 @@
             this.btnDashboard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDashboard.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnDashboard.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(165)))), ((int)(((byte)(177)))));
+            this.btnDashboard.GlowColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(30)))), ((int)(((byte)(107)))), ((int)(((byte)(254)))));
             this.btnDashboard.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(35)))), ((int)(((byte)(45)))));
             this.btnDashboard.Location = new System.Drawing.Point(10, 100);
             this.btnDashboard.Name = "btnDashboard";
@@ -424,6 +432,7 @@
             this.btnDashboard.Text = "   Tổng quan";
             this.btnDashboard.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnDashboard.UseVisualStyleBackColor = false;
+            this.btnDashboard.Click += new System.EventHandler(this.btnDashboard_Click);
             // 
             // logoLabel
             // 
@@ -432,7 +441,7 @@
             this.logoLabel.ForeColor = System.Drawing.Color.White;
             this.logoLabel.Location = new System.Drawing.Point(20, 25);
             this.logoLabel.Name = "logoLabel";
-            this.logoLabel.Size = new System.Drawing.Size(240, 45);
+            this.logoLabel.Size = new System.Drawing.Size(260, 54);
             this.logoLabel.TabIndex = 0;
             this.logoLabel.Text = "Cinema CMS";
             // 

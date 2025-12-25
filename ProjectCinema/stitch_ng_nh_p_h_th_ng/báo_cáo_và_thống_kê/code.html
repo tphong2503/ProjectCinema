@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Báo cáo và Thống kê - Cinema Admin</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#1152d4",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101622",
+              "card-dark": "#161e2d",
+              "card-hover": "#1c263a",
+              "text-secondary": "#92a4c9",
+            },
+            fontFamily: {
+              "display": ["Spline Sans", "sans-serif"],
+              "body": ["Noto Sans", "sans-serif"],
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #101622; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232f48; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #324467; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased overflow-hidden">
+<div class="flex h-screen w-full flex-row overflow-hidden">
+<!-- Side Navigation -->
+<aside class="w-64 flex-shrink-0 border-r border-[#232f48] bg-[#111722] flex flex-col justify-between overflow-y-auto">
+<div class="p-4">
+<!-- User Profile / Brand -->
+<div class="flex gap-3 mb-8 items-center">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-12 border-2 border-[#232f48]" data-alt="Avatar of the cinema manager" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAXuvWw-HpUQMa74UHIsN_jb0HyKiJUeh8h8M7TiJqCT1HU4viKdmIAaaH73iKD0Del57vnH-BmoW-8MQ0BfEFNwApW_qFqnxyYalIRA-4XbSWk0ImjC1NeCfFyxXHvg70i4kxZp48tmPVeRds-42OUP4hh8UIQHXBzIpQfikNfvG_WVoyO7p4fePHyamIfTtvN3iOMNzfqtJie--79pSj9LaQXfTjzUoJn_NcJ94fQDILXsSu74P1BkTWqLWVFVWOvwL_nhMmbQTw");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-bold leading-normal">Cinema Admin</h1>
+<p class="text-text-secondary text-xs font-normal leading-normal">Quản lý rạp</p>
+</div>
+</div>
+<!-- Navigation Menu -->
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#232f48] transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-secondary group-hover:text-white">dashboard</span>
+<p class="text-text-secondary group-hover:text-white text-sm font-medium leading-normal">Tổng quan</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#232f48] transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-secondary group-hover:text-white">movie</span>
+<p class="text-text-secondary group-hover:text-white text-sm font-medium leading-normal">Phim</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#232f48] transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-secondary group-hover:text-white">calendar_month</span>
+<p class="text-text-secondary group-hover:text-white text-sm font-medium leading-normal">Lịch chiếu</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#232f48] transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-secondary group-hover:text-white">confirmation_number</span>
+<p class="text-text-secondary group-hover:text-white text-sm font-medium leading-normal">Vé</p>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/10 border border-primary/20" href="#">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<p class="text-primary text-sm font-bold leading-normal">Báo cáo</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#232f48] transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-secondary group-hover:text-white">settings</span>
+<p class="text-text-secondary group-hover:text-white text-sm font-medium leading-normal">Cài đặt</p>
+</a>
+</nav>
+</div>
+<div class="p-4 border-t border-[#232f48]">
+<button class="flex items-center gap-3 px-3 py-2 w-full rounded-lg hover:bg-[#232f48] text-text-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm font-medium">Đăng xuất</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-background-dark relative">
+<!-- Top Header & Toolbar -->
+<header class="w-full border-b border-[#232f48] bg-[#111722]/80 backdrop-blur-md sticky top-0 z-10">
+<div class="max-w-[1600px] mx-auto px-6 py-4">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<!-- Page Title -->
+<div class="flex flex-col gap-1">
+<h2 class="text-white text-2xl font-bold tracking-tight">Báo cáo &amp; Thống kê</h2>
+<p class="text-text-secondary text-sm">Tổng quan hiệu suất kinh doanh hôm nay</p>
+</div>
+<!-- Action Toolbar -->
+<div class="flex flex-wrap items-center gap-3">
+<!-- Branch Select -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary pointer-events-none text-lg">storefront</span>
+<select class="appearance-none h-10 pl-10 pr-8 bg-[#232f48] border border-[#324467] text-white text-sm rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary cursor-pointer hover:bg-[#2b3a55] transition-colors min-w-[180px]">
+<option value="all">Tất cả chi nhánh</option>
+<option selected="" value="center-point">Center Point Cinema</option>
+<option value="royal-city">Royal City Cinema</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-text-secondary pointer-events-none text-lg">arrow_drop_down</span>
+</div>
+<!-- Export Button -->
+<button class="flex items-center gap-2 h-10 px-4 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-blue-900/20">
+<span class="material-symbols-outlined text-[20px]">download</span>
+<span>Xuất báo cáo</span>
+</button>
+</div>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-2 mt-6 overflow-x-auto pb-1 no-scrollbar">
+<button class="h-8 px-4 rounded-full bg-primary text-white text-sm font-medium transition-all shadow-sm">Hôm nay</button>
+<button class="h-8 px-4 rounded-full bg-[#232f48] text-text-secondary hover:text-white hover:bg-[#324467] text-sm font-medium transition-all">7 ngày qua</button>
+<button class="h-8 px-4 rounded-full bg-[#232f48] text-text-secondary hover:text-white hover:bg-[#324467] text-sm font-medium transition-all">Tháng này</button>
+<button class="h-8 px-4 rounded-full bg-[#232f48] text-text-secondary hover:text-white hover:bg-[#324467] text-sm font-medium transition-all flex items-center gap-1">
+<span>Tùy chọn</span>
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Dashboard Content Scrollable Area -->
+<div class="flex-1 overflow-y-auto p-6 scroll-smooth">
+<div class="max-w-[1600px] mx-auto space-y-6">
+<!-- KPI Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+<!-- Revenue -->
+<div class="bg-card-dark rounded-xl p-5 border border-[#232f48] flex flex-col gap-4 hover:border-[#324467] transition-all">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-green-500/10">
+<span class="material-symbols-outlined text-green-500">payments</span>
+</div>
+<span class="flex items-center text-xs font-medium text-green-400 bg-green-400/10 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-xs mr-1">trending_up</span> +12.5%
+                                </span>
+</div>
+<div>
+<p class="text-text-secondary text-sm font-medium">Tổng doanh thu</p>
+<h3 class="text-white text-2xl font-bold mt-1">1.250.000.000 đ</h3>
+</div>
+</div>
+<!-- Tickets -->
+<div class="bg-card-dark rounded-xl p-5 border border-[#232f48] flex flex-col gap-4 hover:border-[#324467] transition-all">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-blue-500/10">
+<span class="material-symbols-outlined text-blue-500">local_activity</span>
+</div>
+<span class="flex items-center text-xs font-medium text-green-400 bg-green-400/10 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-xs mr-1">trending_up</span> +5.2%
+                                </span>
+</div>
+<div>
+<p class="text-text-secondary text-sm font-medium">Vé bán ra</p>
+<h3 class="text-white text-2xl font-bold mt-1">8,450</h3>
+</div>
+</div>
+<!-- Occupancy -->
+<div class="bg-card-dark rounded-xl p-5 border border-[#232f48] flex flex-col gap-4 hover:border-[#324467] transition-all">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-orange-500/10">
+<span class="material-symbols-outlined text-orange-500">event_seat</span>
+</div>
+<span class="flex items-center text-xs font-medium text-red-400 bg-red-400/10 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-xs mr-1">trending_down</span> -2.1%
+                                </span>
+</div>
+<div>
+<p class="text-text-secondary text-sm font-medium">Tỷ lệ lấp đầy</p>
+<h3 class="text-white text-2xl font-bold mt-1">68.4%</h3>
+</div>
+</div>
+<!-- Top Movie Mini -->
+<div class="bg-card-dark rounded-xl p-5 border border-[#232f48] flex flex-col gap-4 hover:border-[#324467] transition-all">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-purple-500/10">
+<span class="material-symbols-outlined text-purple-500">star</span>
+</div>
+<span class="text-xs font-medium text-text-secondary">Phim #1 hôm nay</span>
+</div>
+<div>
+<p class="text-text-secondary text-sm font-medium truncate">Đào, Phở và Piano</p>
+<h3 class="text-white text-2xl font-bold mt-1">320.5 Tr đ</h3>
+</div>
+</div>
+</div>
+<!-- Main Chart & Sidebar Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Revenue Chart Area -->
+<div class="lg:col-span-2 bg-card-dark rounded-xl p-6 border border-[#232f48]">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-white text-lg font-bold">Biểu đồ doanh thu</h3>
+<button class="text-text-secondary hover:text-white text-sm flex items-center gap-1">
+                                    Chi tiết <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- CSS Bar Chart Visualization -->
+<div class="h-[300px] w-full flex items-end justify-between gap-2 sm:gap-4 pt-4 border-b border-[#232f48] relative">
+<!-- Grid lines background hint -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+<div class="w-full h-px bg-[#232f48] border-dashed border-t border-[#324467]/30"></div>
+<div class="w-full h-px bg-[#232f48] border-dashed border-t border-[#324467]/30"></div>
+<div class="w-full h-px bg-[#232f48] border-dashed border-t border-[#324467]/30"></div>
+<div class="w-full h-px bg-[#232f48] border-dashed border-t border-[#324467]/30"></div>
+<div class="w-full h-px bg-[#232f48] border-dashed border-t border-[#324467]/30"></div>
+</div>
+<!-- Bars -->
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="w-full max-w-[40px] bg-primary/30 rounded-t-sm h-[40%] group-hover:bg-primary transition-all relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#232f48] text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">40 Tr</div>
+</div>
+<span class="text-xs text-text-secondary">T2</span>
+</div>
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="w-full max-w-[40px] bg-primary/30 rounded-t-sm h-[55%] group-hover:bg-primary transition-all relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#232f48] text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">55 Tr</div>
+</div>
+<span class="text-xs text-text-secondary">T3</span>
+</div>
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="w-full max-w-[40px] bg-primary/30 rounded-t-sm h-[45%] group-hover:bg-primary transition-all relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#232f48] text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">45 Tr</div>
+</div>
+<span class="text-xs text-text-secondary">T4</span>
+</div>
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="w-full max-w-[40px] bg-primary/30 rounded-t-sm h-[70%] group-hover:bg-primary transition-all relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#232f48] text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">70 Tr</div>
+</div>
+<span class="text-xs text-text-secondary">T5</span>
+</div>
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="w-full max-w-[40px] bg-primary/50 rounded-t-sm h-[90%] group-hover:bg-primary transition-all relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#232f48] text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">90 Tr</div>
+</div>
+<span class="text-xs text-text-secondary font-bold text-white">T6</span>
+</div>
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="w-full max-w-[40px] bg-primary rounded-t-sm h-[100%] hover:brightness-110 transition-all relative shadow-[0_0_15px_rgba(17,82,212,0.5)]">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#232f48] text-white text-xs py-1 px-2 rounded opacity-100 transition-opacity whitespace-nowrap z-10 font-bold">120 Tr</div>
+</div>
+<span class="text-xs text-primary font-bold">T7</span>
+</div>
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="w-full max-w-[40px] bg-primary/50 rounded-t-sm h-[85%] group-hover:bg-primary transition-all relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#232f48] text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">85 Tr</div>
+</div>
+<span class="text-xs text-text-secondary font-bold text-white">CN</span>
+</div>
+</div>
+</div>
+<!-- Top Movies List -->
+<div class="lg:col-span-1 bg-card-dark rounded-xl p-6 border border-[#232f48] flex flex-col h-full">
+<h3 class="text-white text-lg font-bold mb-4">Phim phổ biến</h3>
+<div class="flex-1 flex flex-col gap-5 overflow-y-auto pr-2">
+<!-- Movie Item 1 -->
+<div class="flex gap-3 items-center">
+<div class="w-12 h-16 rounded bg-cover bg-center shrink-0 shadow-sm" data-alt="Poster for movie 1" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDeV2j6l8OvC5jdM6oXMZyT1Re5byYB7lUsCRaPGpEQhIbyV6KvfY--9HRiiw9XKgWYnDFpZSl2sAGDWUBtpvxNyFGpIiRPyYJQuoGDiY_QGhBK2Eer3SgvtMSbbWY2RHa8sXHouAWP4dF1XYDHq_hSoQVI5YyzRvQJNtfJRx3o7wYCGqeVrqYV0DsSWUtrsnt9u-F3UUnIqBafEfWN4yvq4m0LZ2JVmdkrimOgMjKchpFX-loDyHoKLWIP9pXPVNHIOVlKxzwQMwI');"></div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<p class="text-white text-sm font-medium truncate">Đào, Phở và Piano</p>
+<p class="text-primary text-sm font-bold">320Tr</p>
+</div>
+<div class="w-full bg-[#232f48] rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 85%"></div>
+</div>
+<p class="text-text-secondary text-xs mt-1">1,204 vé</p>
+</div>
+</div>
+<!-- Movie Item 2 -->
+<div class="flex gap-3 items-center">
+<div class="w-12 h-16 rounded bg-cover bg-center shrink-0 shadow-sm" data-alt="Poster for movie 2" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuATKOOsqVr7W71F7sjMrA3DahUsvw8rhiofOG6nWh0o6V9udySJfyO39qtkOLm6Os4FePgs1a6igWldj6RwRpkKGqLx6JslIn3yUN8Rllt_QyD73Y3hmx4ct0Ux72DX9yJ0kvKofJbhFg1Qj-FspaIdfRTUaz5Jgnf_awQC11Qhqq9ZP9YSqWbl_QgJK_4vw2guiNaRTBekh_TVt-GPLIUOBkk6E3z3ak04SkdgbuLn7HAD69gwCdl0EKvUIwU-pryi7MZts0D40B0');"></div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<p class="text-white text-sm font-medium truncate">Dune: Hành tinh cát</p>
+<p class="text-primary text-sm font-bold">210Tr</p>
+</div>
+<div class="w-full bg-[#232f48] rounded-full h-1.5">
+<div class="bg-primary/70 h-1.5 rounded-full" style="width: 65%"></div>
+</div>
+<p class="text-text-secondary text-xs mt-1">890 vé</p>
+</div>
+</div>
+<!-- Movie Item 3 -->
+<div class="flex gap-3 items-center">
+<div class="w-12 h-16 rounded bg-cover bg-center shrink-0 shadow-sm" data-alt="Poster for movie 3" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCg2o5aMbKwRW_H0p0UP-BVs8HZ38LGcyOTGoi0zQw0RMrpuyjU6ZkqhjZOulJIqKnZQ2ODvKcHxd4sQMHHUNxa1Rt5ZttqQlOnzewJgW9OcglCNZKNHHJ8a06etEOeTMpMtgSAhr9S7-qYsE9tAWIXATStzHdQZbVq-zPAnwXEx_Zpke50sQezGNwz3ohlILgaY4D3gIrKzo26qWyLaBbiwt7PEaALdu_O87nKQOP7t2VurriZSXmd7vO1nhk_WwdbC63jKYioPqk');"></div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<p class="text-white text-sm font-medium truncate">Mai</p>
+<p class="text-primary text-sm font-bold">150Tr</p>
+</div>
+<div class="w-full bg-[#232f48] rounded-full h-1.5">
+<div class="bg-primary/50 h-1.5 rounded-full" style="width: 45%"></div>
+</div>
+<p class="text-text-secondary text-xs mt-1">540 vé</p>
+</div>
+</div>
+<button class="w-full py-2 mt-auto text-sm text-primary font-medium hover:bg-[#232f48] rounded-lg transition-colors">
+                                    Xem tất cả phim
+                                </button>
+</div>
+</div>
+</div>
+<!-- Room Performance & Detailed Table -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 pb-6">
+<!-- Room Performance -->
+<div class="xl:col-span-1 flex flex-col gap-4">
+<h3 class="text-white text-lg font-bold">Hiệu suất phòng chiếu</h3>
+<div class="grid grid-cols-2 gap-3">
+<!-- Room Card -->
+<div class="bg-card-dark border border-[#232f48] rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-card-hover transition-colors">
+<div class="relative size-16">
+<svg class="size-full" viewbox="0 0 36 36">
+<path class="text-[#232f48]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-green-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="85, 100" stroke-width="4"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">85%</div>
+</div>
+<div class="text-center">
+<p class="text-white text-sm font-bold">Phòng 01</p>
+<p class="text-text-secondary text-xs">IMAX</p>
+</div>
+</div>
+<!-- Room Card -->
+<div class="bg-card-dark border border-[#232f48] rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-card-hover transition-colors">
+<div class="relative size-16">
+<svg class="size-full" viewbox="0 0 36 36">
+<path class="text-[#232f48]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-blue-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="62, 100" stroke-width="4"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">62%</div>
+</div>
+<div class="text-center">
+<p class="text-white text-sm font-bold">Phòng 02</p>
+<p class="text-text-secondary text-xs">Standard</p>
+</div>
+</div>
+<!-- Room Card -->
+<div class="bg-card-dark border border-[#232f48] rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-card-hover transition-colors">
+<div class="relative size-16">
+<svg class="size-full" viewbox="0 0 36 36">
+<path class="text-[#232f48]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-yellow-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="45, 100" stroke-width="4"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">45%</div>
+</div>
+<div class="text-center">
+<p class="text-white text-sm font-bold">Phòng 03</p>
+<p class="text-text-secondary text-xs">VIP</p>
+</div>
+</div>
+<!-- Room Card -->
+<div class="bg-card-dark border border-[#232f48] rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-card-hover transition-colors opacity-60">
+<div class="relative size-16">
+<svg class="size-full" viewbox="0 0 36 36">
+<path class="text-[#232f48]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-slate-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="0, 100" stroke-width="4"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-text-secondary">0%</div>
+</div>
+<div class="text-center">
+<p class="text-white text-sm font-bold">Phòng 04</p>
+<p class="text-text-secondary text-xs">Bảo trì</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Data Table -->
+<div class="xl:col-span-2 bg-card-dark rounded-xl border border-[#232f48] overflow-hidden flex flex-col">
+<div class="p-4 border-b border-[#232f48] flex justify-between items-center bg-[#192233]">
+<h3 class="text-white text-lg font-bold">Chi tiết giao dịch gần đây</h3>
+<button class="text-primary text-sm font-medium hover:text-blue-400">Xem tất cả</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm text-text-secondary">
+<thead class="bg-[#1c263a] text-white font-medium">
+<tr>
+<th class="px-6 py-4">Mã GD</th>
+<th class="px-6 py-4">Thời gian</th>
+<th class="px-6 py-4">Phim</th>
+<th class="px-6 py-4">Phòng/Ghế</th>
+<th class="px-6 py-4 text-right">Tổng tiền</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#232f48]">
+<tr class="hover:bg-[#1c263a] transition-colors">
+<td class="px-6 py-4 font-mono text-xs">#TRX-9821</td>
+<td class="px-6 py-4">10:45 AM</td>
+<td class="px-6 py-4 font-medium text-white">Đào, Phở và Piano</td>
+<td class="px-6 py-4">P01 - G12, G13</td>
+<td class="px-6 py-4 text-right text-white font-bold">180.000 đ</td>
+</tr>
+<tr class="hover:bg-[#1c263a] transition-colors">
+<td class="px-6 py-4 font-mono text-xs">#TRX-9822</td>
+<td class="px-6 py-4">10:48 AM</td>
+<td class="px-6 py-4 font-medium text-white">Dune 2</td>
+<td class="px-6 py-4">P02 - F05</td>
+<td class="px-6 py-4 text-right text-white font-bold">110.000 đ</td>
+</tr>
+<tr class="hover:bg-[#1c263a] transition-colors">
+<td class="px-6 py-4 font-mono text-xs">#TRX-9823</td>
+<td class="px-6 py-4">11:02 AM</td>
+<td class="px-6 py-4 font-medium text-white">Mai</td>
+<td class="px-6 py-4">P03 - H01, H02</td>
+<td class="px-6 py-4 text-right text-white font-bold">220.000 đ</td>
+</tr>
+<tr class="hover:bg-[#1c263a] transition-colors">
+<td class="px-6 py-4 font-mono text-xs">#TRX-9824</td>
+<td class="px-6 py-4">11:15 AM</td>
+<td class="px-6 py-4 font-medium text-white">Kung Fu Panda 4</td>
+<td class="px-6 py-4">P01 - E08, E09, E10</td>
+<td class="px-6 py-4 text-right text-white font-bold">330.000 đ</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<footer class="text-center pb-8 pt-4">
+<p class="text-xs text-text-secondary">© 2024 Cinema Admin Dashboard. All rights reserved.</p>
+</footer>
+</div>
+</div>
+</main>
+</div>
+</body></html>

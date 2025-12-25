@@ -11,7 +11,7 @@
       "RelativeMoniker": "D:0:0:{DEAC260B-1943-4F7B-97B9-32628A66CD23}|ProjectCinema\\ProjectCinema.csproj|solutionrelative:projectcinema\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DEAC260B-1943-4F7B-97B9-32628A66CD23}|ProjectCinema\\ProjectCinema.csproj|d:\\tailieu\\project_cinema\\projectcinema\\projectcinema\\frmdashboard.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{DEAC260B-1943-4F7B-97B9-32628A66CD23}|ProjectCinema\\ProjectCinema.csproj|D:\\TAILIEU\\Project_cinema\\ProjectCinema\\projectcinema\\frmdashboard.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{DEAC260B-1943-4F7B-97B9-32628A66CD23}|ProjectCinema\\ProjectCinema.csproj|solutionrelative:projectcinema\\frmdashboard.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
@@ -62,8 +62,7 @@
               "RelativeToolTip": "ProjectCinema\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T13:44:23.921Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-23T13:44:23.921Z"
             },
             {
               "$type": "Document",
@@ -74,8 +73,7 @@
               "ToolTip": "D:\\TAILIEU\\Project_cinema\\ProjectCinema\\ProjectCinema\\frmDashBoard.cs [Design]",
               "RelativeToolTip": "ProjectCinema\\frmDashBoard.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T13:44:24.493Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2025-12-23T13:44:24.493Z"
             }
           ]
         }

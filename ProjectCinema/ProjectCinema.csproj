@@ -58,11 +58,29 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="frmDashBoard.cs">
+    <Compile Include="Dashboard\frmDashBoard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmDashBoard.Designer.cs">
+    <Compile Include="Dashboard\frmDashBoard.Designer.cs">
       <DependentUpon>frmDashBoard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="QLghe\frmQLGhe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QLghe\frmQLGhe.Designer.cs">
+      <DependentUpon>frmQLGhe.cs</DependentUpon>
+    </Compile>
+     <Compile Include="QLphim\frmQLPhim.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QLphim\frmQLPhim.Designer.cs">
+      <DependentUpon>frmQLPhim.cs</DependentUpon>
+    </Compile>
+    <Compile Include="QLXuatChieu\frmQLXuatchieu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QLXuatChieu\frmQLXuatchieu.Designer.cs">
+      <DependentUpon>frmQLXuatchieu.cs</DependentUpon>
     </Compile>
     <Compile Include="Modals\ChiTietHoaDonDV.cs" />
     <Compile Include="Modals\DashBoard.cs" />
@@ -102,7 +120,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmDashBoard.resx">
+    <EmbeddedResource Include="Dashboard\frmDashBoard.resx">
       <DependentUpon>frmDashBoard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
