@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="../ProjectCinema.BUS/ProjectCinema.BUS.csproj" Id="35067504-267e-41ec-947e-860306b5a78e">
+    <Platform Solution="Debug|*" Project="x64" />
+  </Project>
+  <Project Path="../ProjectCinema.DAL/ProjectCinema.DAL.csproj" Id="9708ccf5-9521-4ec2-8e8d-af9f069fab5d">
+    <Platform Solution="Debug|*" Project="x64" />
+  </Project>
+  <Project Path="ProjectCinema.GUI.csproj" Id="630fb202-9a62-421b-af78-5f09bb8aa0c2">
+    <Platform Solution="Debug|*" Project="x64" />
+  </Project>
+</Solution>
