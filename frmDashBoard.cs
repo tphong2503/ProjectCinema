@@ -10,10 +10,12 @@ namespace ProjectCinema.GUI
         private DashboardBUS _dashboardBUS;
         private Panel pnlSidebar, pnlMain, pnlKPI;
         private Button btnToggleSidebar;
+        private Button _btnLogout;
         private Label lblWelcome, lblDoanhThu, lblSoVe, lblSuatChieu, lblPhim;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartRevenue;
         private bool _sidebarExpanded = true;
         private Timer _toggleTimer;
+        private System.Collections.Generic.List<Button> _menuButtons = new System.Collections.Generic.List<Button>();
 
         public frmDashBoard()
         {
@@ -107,7 +109,7 @@ namespace ProjectCinema.GUI
             btnBaoCao.Click += (s, e) => OpenChildForm(new frmBaoCao());
 
             // Nút đăng xuất ở dưới cùng
-            var btnLogout = new Button
+            _btnLogout = new Button
             {
                 Location = new System.Drawing.Point(10, 600),
                 Size = new System.Drawing.Size(180, 40),
@@ -117,10 +119,11 @@ namespace ProjectCinema.GUI
                 BackColor = System.Drawing.Color.FromArgb(229, 115, 115),
                 ForeColor = System.Drawing.Color.White,
                 TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
-                Padding = new Padding(10, 0, 0, 0)
+                Padding = new Padding(10, 0, 0, 0),
+                Tag = "Đăng xuất" // Store original text
             };
-            btnLogout.FlatAppearance.BorderSize = 0;
-            btnLogout.Click += BtnLogout_Click;
+            _btnLogout.FlatAppearance.BorderSize = 0;
+            _btnLogout.Click += BtnLogout_Click;
 
             pnlSidebar.Controls.Add(btnToggleSidebar);
             pnlSidebar.Controls.Add(btnDashboard);
@@ -130,7 +133,7 @@ namespace ProjectCinema.GUI
             pnlSidebar.Controls.Add(btnBanVe);
             pnlSidebar.Controls.Add(btnNhanVien);
             pnlSidebar.Controls.Add(btnBaoCao);
-            pnlSidebar.Controls.Add(btnLogout);
+            pnlSidebar.Controls.Add(_btnLogout);
             
             this.Controls.Add(pnlSidebar);
         }
@@ -147,11 +150,14 @@ namespace ProjectCinema.GUI
                 BackColor = System.Drawing.Color.FromArgb(84, 110, 122),
                 ForeColor = System.Drawing.Color.White,
                 TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
-                Padding = new Padding(20, 0, 0, 0)
+                Padding = new Padding(20, 0, 0, 0),
+                Tag = text // Store original text for later use
             };
             btn.FlatAppearance.BorderSize = 0;
             btn.MouseEnter += (s, e) => btn.BackColor = System.Drawing.Color.FromArgb(69, 90, 100);
             btn.MouseLeave += (s, e) => btn.BackColor = System.Drawing.Color.FromArgb(84, 110, 122);
+            
+            _menuButtons.Add(btn); // Track button for toggle functionality
             return btn;
         }
 
@@ -284,6 +290,12 @@ namespace ProjectCinema.GUI
             if (_toggleTimer != null && _toggleTimer.Enabled)
                 return;
 
+            // Hide text immediately when collapsing (before animation)
+            if (_sidebarExpanded)
+            {
+                UpdateMenuButtonsForCollapse();
+            }
+
             _toggleTimer = new Timer { Interval = 10 };
             int targetWidth = _sidebarExpanded ? 60 : 200;
             int step = _sidebarExpanded ? -10 : 10;
@@ -292,6 +304,14 @@ namespace ProjectCinema.GUI
             {
                 pnlSidebar.Width += step;
                 
+                // Resize buttons to match sidebar width during animation
+                foreach (var btn in _menuButtons)
+                {
+                    btn.Width = pnlSidebar.Width;
+                }
+                btnToggleSidebar.Width = pnlSidebar.Width - 20;
+                _btnLogout.Width = pnlSidebar.Width - 20;
+                
                 if ((_sidebarExpanded && pnlSidebar.Width <= targetWidth) ||
                     (!_sidebarExpanded && pnlSidebar.Width >= targetWidth))
                 {
@@ -299,11 +319,54 @@ namespace ProjectCinema.GUI
                     _toggleTimer.Stop();
                     _sidebarExpanded = !_sidebarExpanded;
                     
-                    // Cập nhật văn bản nút
-                    btnToggleSidebar.Text = _sidebarExpanded ? "☰ MENU" : "☰";
+                    // Show text after expanding (after animation)
+                    if (_sidebarExpanded)
+                    {
+                        UpdateMenuButtonsForExpand();
+                    }
                 }
             };
             _toggleTimer.Start();
+        }
+
+        private void UpdateMenuButtonsForCollapse()
+        {
+            // Hide text, center icon for toggle button
+            btnToggleSidebar.Text = "☰";
+            btnToggleSidebar.Padding = new Padding(15, 0, 0, 0);
+            
+            // Hide text, center icons for menu buttons
+            foreach (var btn in _menuButtons)
+            {
+                string icon = btn.Text.Split(' ')[0]; // Extract emoji icon
+                btn.Text = icon;
+                btn.Padding = new Padding(12, 0, 0, 0);
+            }
+            
+            // Handle logout button
+            _btnLogout.Text = "🚪";
+            _btnLogout.Padding = new Padding(15, 0, 0, 0);
+        }
+
+        private void UpdateMenuButtonsForExpand()
+        {
+            // Show full text for toggle button
+            btnToggleSidebar.Text = "☰ MENU";
+            btnToggleSidebar.Padding = new Padding(10, 0, 0, 0);
+            
+            // Show full text for menu buttons
+            foreach (var btn in _menuButtons)
+            {
+                string originalText = btn.Tag as string;
+                string icon = btn.Text; // Current icon-only text
+                btn.Text = $"{icon}  {originalText}";
+                btn.Padding = new Padding(20, 0, 0, 0);
+            }
+            
+            // Handle logout button
+            string logoutText = _btnLogout.Tag as string;
+            _btnLogout.Text = $"🚪 {logoutText}";
+            _btnLogout.Padding = new Padding(10, 0, 0, 0);
         }
 
         private void LoadDashboardData()
